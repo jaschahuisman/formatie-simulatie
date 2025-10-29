@@ -4,6 +4,7 @@ import { google } from "@ai-sdk/google";
 export const model = google("gemini-2.0-flash");
 
 // Model configurations voor variatie in gesprekken
+// Alle gebruiken gemini-2.0-flash met verschillende settings
 export const MODEL_CONFIGS = [
   {
     name: "gemini-2.0-flash-balanced",
@@ -36,8 +37,8 @@ export const MODEL_CONFIGS = [
     description: "Focused: meer voorspelbaar en consistent",
   },
   {
-    name: "gemini-1.5-flash-dynamic",
-    model: google("gemini-1.5-flash"),
+    name: "gemini-2.0-flash-dynamic",
+    model: google("gemini-2.0-flash"),
     settings: {
       temperature: 1.0,
       topP: 0.95,
