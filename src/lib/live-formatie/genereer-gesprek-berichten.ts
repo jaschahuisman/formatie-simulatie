@@ -28,7 +28,7 @@ export function buildMessageSchema(deelnemers: Deelnemer[]) {
   const deelnemerNames = deelnemers.map((d) => d.name);
   
   const MIN_TURNS = 2;
-  const MAX_TURNS = 5; // Accepteer tot 5 turns in schema, maar we truncaten later
+  const MAX_TURNS = 10; // Ruime limiet voor schema, we truncaten naar 3 in code
   const MIN_MESSAGES_PER_TURN = 1;
   const MAX_MESSAGES_PER_TURN = 3;
 
