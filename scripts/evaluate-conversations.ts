@@ -51,6 +51,30 @@ interface EvaluationResult {
   };
 }
 
+function printConversation(result: EvaluationResult) {
+  console.log(`\n${"=".repeat(80)}`);
+  console.log(`📝 ${result.topic}`);
+  console.log(`${"=".repeat(80)}\n`);
+
+  let lastSpeaker = "";
+  result.messages.forEach((msg, index) => {
+    // Add spacing between different speakers
+    if (lastSpeaker && lastSpeaker !== msg.deelnemerName) {
+      console.log("");
+    }
+    
+    // Format: [Name] Message
+    const speaker = msg.deelnemerName === lastSpeaker ? "  ↳" : `[${msg.deelnemerName}]`;
+    console.log(`${speaker} ${msg.message}`);
+    
+    lastSpeaker = msg.deelnemerName;
+  });
+
+  console.log(`\n${"─".repeat(80)}`);
+  console.log(`📊 ${result.metadata.totalMessages} berichten | ${result.metadata.conversationFlow.uniqueSpeakers} sprekers | ${Math.round(result.metadata.averageMessageLength)} chars/msg`);
+  console.log(`${"=".repeat(80)}\n`);
+}
+
 async function evaluateConversation(
   topic: string,
   deelnemerIds: number[]
@@ -123,6 +147,9 @@ async function evaluateConversation(
     console.log(`   📏 Avg message length: ${Math.round(result.metadata.averageMessageLength)} chars`);
     console.log(`   🔄 ${result.metadata.conversationFlow.speakerTransitions} speaker transitions`);
 
+    // Print the conversation
+    printConversation(result);
+
     return result;
   } catch (error) {
     console.error(`❌ Error generating conversation for "${topic}":`, error);
@@ -179,13 +206,16 @@ async function runEvaluation() {
     )
   );
 
-  console.log(`\n✅ Evaluation complete!`);
-  console.log(`📊 Generated ${results.length} conversations`);
+  console.log(`\n${"=".repeat(80)}`);
+  console.log(`✅ EVALUATION COMPLETE`);
+  console.log(`${"=".repeat(80)}`);
+  console.log(`\n📊 Generated ${results.length} conversations`);
   console.log(`💾 Results saved to: ${outputFile}`);
-  console.log(`\n📈 Summary:`);
+  console.log(`\n📈 Overall Summary:`);
   console.log(`   Total messages: ${results.reduce((sum, r) => sum + r.metadata.totalMessages, 0)}`);
   console.log(`   Avg per conversation: ${Math.round(results.reduce((sum, r) => sum + r.metadata.totalMessages, 0) / results.length)}`);
   console.log(`   With emojis: ${results.filter((r) => r.metadata.hasEmojis).length}/${results.length}`);
+  console.log(`\n${"=".repeat(80)}\n`);
 }
 
 // Run evaluation
