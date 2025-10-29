@@ -136,19 +136,27 @@ const buildSystemMessage = (opties: {
     # Chat-stijl Format
     - Dit is een GROEPSCHAT. Politici sturen korte, snelle berichten zoals in WhatsApp
     - Elk persoon stuurt 1-3 berichten per beurt (een "burst")
+      * 1 bericht = korte reactie: "Precies!", "Totaal mee oneens", "Dat klopt niet"
+      * 2-3 berichten = uitgebreidere reactie of argument opbouwen
     - Berichten zijn ZEER KORT:
-      * Meestal 1 korte zin
-      * Soms halve zinnen of uitroepen: "Precies!", "Dat slaat nergens op.", "Kom op zeg."
+      * Meestal 1 korte zin of minder
+      * Vaak halve zinnen of uitroepen: "Precies!", "Dat slaat nergens op.", "Kom op zeg."
       * Maximum 15-20 woorden per bericht
     - Emojis zijn toegestaan en moeten spaarzaam gebruikt worden:
       * Vooral door jongere/informelere politici (Rob Jetten, Laurens Dassen)
       * Voorbeelden: 🔥 💪 🤔 ✅ ❌ 👍 😅 🎯
       * Oudere/formelere politici gebruiken zelden of nooit emojis
-    - Bursts kunnen zijn:
-      * Eén gedachte opgebroken in delen: ["Dat vind ik te kort door de bocht.", "We moeten dit serieus uitwerken."]
-      * Snelle reacties achter elkaar: ["Precies! 👍", "Daar ben ik het volledig mee eens."]
-      * Opbouwen naar een punt: ["Even eerlijk zijn.", "Dit gaat nergens over.", "We hebben een beter plan nodig."]
-    - REAGEER op wat er net gezegd is. Dit is een échte, dynamische discussie.
+    
+    # Reactieve Flow - WIE reageert op WIE
+    - Politici REAGEREN direct op wat er net gezegd is
+    - Bepaal logisch wie getriggerd wordt door de laatste spreker:
+      * Tegenpolen reageren vaak op elkaar: Wilders ↔ Timmermans, PVV ↔ GL-PvdA
+      * Coalitiegenoten steunen elkaar: VVD + NSC, GL-PvdA + D66 + PvdD
+      * Partijen met overlap kunnen kritisch zijn: VVD vs JA21, BBB vs PVV
+    - Als iemand een provocerende uitspraak doet, laat anderen reageren
+    - Niet elke politicus hoeft elke ronde te spreken
+    - Laat het gesprek natuurlijk vloeien: wie zou nu logisch reageren?
+    
     - Gebruik de partijstandpunten en tone of voice van elke politicus
     - Houd het constructief maar wel met realistische spanning en meningsverschillen
     `;
@@ -170,7 +178,7 @@ export async function genereerGesprekBerichten(opties: {
   );
 
   logger.info(
-    `Generating ${GESPREK_TARGET_MESSAGES_COUNT} messages in ${maxChunks} chunks of ${GESPREK_CHUNK_SIZE} messages`,
+    `Generating ${GESPREK_TARGET_MESSAGES_COUNT} messages in ~${maxChunks} batches of ~${GESPREK_CHUNK_SIZE} messages (kleinere batches voor natuurlijker gesprek)`,
     { phase }
   );
 
@@ -198,7 +206,7 @@ export async function genereerGesprekBerichten(opties: {
     const messagesThisChunk = Math.min(GESPREK_CHUNK_SIZE, remainingMessages);
 
     logger.debug(
-      `Generating chunk ${chunkCount}/${maxChunks} with ${messagesThisChunk} messages`,
+      `Generating batch ${chunkCount}/${maxChunks} with ${messagesThisChunk} messages (3-4 turns)`,
       { phase }
     );
 
@@ -218,22 +226,44 @@ export async function genereerGesprekBerichten(opties: {
         "Dit is het EINDE van het gesprek. Politici moeten nu naar elkaar toebewegen. Laat zien dat er ruimte is voor een compromis of dat er concrete vervolgstappen worden gezet. Eindig constructief met perspectief op een oplossing.",
     };
 
+    // Bepaal laatste spreker(s) voor context
+    const lastSpeakers = generatedMessages.length > 0
+      ? generatedMessages.slice(-3).map(m => ({
+          name: m.deelnemerName,
+          message: m.message
+        }))
+      : [];
+    
+    const lastSpeakerContext = lastSpeakers.length > 0
+      ? `\n## Laatste berichten (reageer hierop):\n${lastSpeakers.map(s => `${s.name}: ${s.message}`).join('\n')}\n`
+      : '';
+
     const userPrompt = isLastChunk
-      ? `${conversationHistoryContext}
+      ? `${conversationHistoryContext}${lastSpeakerContext}
 
 ## Fase: ${phase.toUpperCase()} 
 ${phaseInstructions[phase]}
 
 DIT IS HET LAATSTE STUK. Genereer ${messagesThisChunk} berichten die het gesprek AFSLUITEN.
 Het gesprek moet eindigen met toenadering en perspectief op een compromis of oplossing. 
-Laat politici concrete vervolgstappen noemen of ruimte laten voor een gezamenlijke aanpak.`
-      : `${conversationHistoryContext}
+Laat politici concrete vervolgstappen noemen of ruimte laten voor een gezamenlijke aanpak.
+
+WIE zou logisch reageren op de laatste sprekers? Denk na over:
+- Wie wordt getriggerd door wat er net gezegd is?
+- Welke politici zouden elkaar willen steunen of tegenspreken?
+- Laat het gesprek natuurlijk naar een conclusie vloeien.`
+      : `${conversationHistoryContext}${lastSpeakerContext}
 
 ## Fase: ${phase.toUpperCase()}
 ${phaseInstructions[phase]}
 
-Genereer de volgende ${messagesThisChunk} berichten van het gesprek.
-Zorg dat politici reageren op wat er net gezegd is.`;
+Genereer de volgende ${messagesThisChunk} berichten (dit zijn ${messagesThisChunk} INDIVIDUELE berichten, dus 3-4 politici die elk 1-3 berichten sturen).
+
+WIE zou logisch reageren op wat er net gezegd is? Denk na over:
+- Wie wordt direct getriggerd door de laatste spreker?
+- Zijn er tegenpolen die op elkaar reageren?
+- Zijn er coalitiegenoten die elkaar steunen?
+- Niet iedereen hoeft elke ronde te spreken - focus op natuurlijke reacties.`;
 
     try {
       const response = await generateObject({
