@@ -32,19 +32,35 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   );
   const partijNamen = deelnemers.map((d) => d.partij.short).join(", ");
 
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL!;
+  const gesprekUrl = `${baseUrl}/gesprek/${id}`;
+  const title = `${gesprek.onderwerp} - Live Formatie`;
+  const description = `Een gesprek tussen ${partijNamen} over ${gesprek.onderwerp}`;
+
   return {
-    title: `${gesprek.onderwerp} - Live Formatie`,
+    title,
     description: `Zie wat ${partijNamen} vinden over ${gesprek.onderwerp}`,
     openGraph: {
-      title: `${gesprek.onderwerp}`,
-      description: `Een gesprek tussen ${partijNamen} over ${gesprek.onderwerp}`,
+      title,
+      description,
       type: "article",
       siteName: "Live Formatie",
+      locale: "nl_NL",
+      url: gesprekUrl,
+      images: [
+        {
+          url: "/logo.png",
+          width: 800,
+          height: 200,
+          alt: "Live Formatie Logo",
+        },
+      ],
     },
     twitter: {
       card: "summary_large_image",
-      title: `${gesprek.onderwerp}`,
-      description: `Een gesprek tussen ${partijNamen} over ${gesprek.onderwerp}`,
+      title,
+      description,
+      images: ["/logo.png"],
     },
   };
 }
@@ -72,8 +88,7 @@ export default async function GesprekPage({ params }: Props) {
     deelnemersCount: deelnemers.length,
   });
 
-  const baseUrl =
-    process.env.NEXT_PUBLIC_BASE_URL || "https://live-formatie.nl";
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL!;
   const gesprekUrl = `${baseUrl}/gesprek/${id}`;
 
   return (
@@ -110,7 +125,7 @@ export default async function GesprekPage({ params }: Props) {
 
         <ShareSection
           url={gesprekUrl}
-          title={`Bekijk dit gesprek over ${gesprek.onderwerp}`}
+          title={`Bekijk mijn simulatie van een formatiegesprek over ${gesprek.onderwerp}!`}
         />
       </Container>
     </Page>

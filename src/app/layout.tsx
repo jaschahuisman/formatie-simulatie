@@ -3,7 +3,10 @@ import { Averia_Libre, Rubik_Dirt } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL!;
+
 export const metadata: Metadata = {
+  metadataBase: new URL(baseUrl),
   title: "Live Formatie - Politieke Gesprekken",
   description:
     "Maak je eigen formatiegesprek en ontdek hoe politieke partijen tot een compromis kunnen komen.",
@@ -21,12 +24,23 @@ export const metadata: Metadata = {
       "Maak je eigen formatiegesprek en ontdek hoe politieke partijen tot een compromis kunnen komen.",
     type: "website",
     siteName: "Live Formatie",
+    locale: "nl_NL",
+    url: baseUrl,
+    images: [
+      {
+        url: "/logo.png",
+        width: 800,
+        height: 200,
+        alt: "Live Formatie Logo",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Live Formatie - Politieke Gesprekken",
     description:
       "Maak je eigen formatiegesprek en ontdek hoe politieke partijen tot een compromis kunnen komen.",
+    images: ["/logo.png"],
   },
 };
 
