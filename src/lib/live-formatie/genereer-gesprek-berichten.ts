@@ -245,16 +245,14 @@ export async function genereerGesprekBerichten(opties: {
       { phase, remainingMessages }
     );
 
-    // Context van eerdere berichten (NIET de laatste 5, die worden apart getoond)
-    // We tonen alleen eerdere berichten als er meer dan 5 berichten zijn
+    // Context: ALLEEN een samenvatting bij lange gesprekken
+    // We tonen GEEN individuele eerdere berichten om verwarring te voorkomen
+    // De AI mag ALLEEN reageren op de laatste 5 berichten
     const conversationSummaryContext =
-      generatedMessages.length > 10
-        ? `\n## Eerdere berichten (samenvatting):\nEr zijn al ${generatedMessages.length} berichten uitgewisseld over: ${opties.onderwerp}. De discussie is gaande.\n`
-        : generatedMessages.length > 5
-        ? `\n## Eerdere berichten (voor context):\n${generatedMessages
-            .slice(0, -5)  // Alleen berichten VOOR de laatste 5
-            .map((m) => `${m.deelnemerName}: ${m.message}`)
-            .join("\n")}\n`
+      generatedMessages.length > 15
+        ? `\n## Context:\nEr zijn al ${generatedMessages.length} berichten uitgewisseld. Het gesprek over "${opties.onderwerp}" is in volle gang.\n\n⚠️ LET OP: Reageer ALLEEN op de LAATSTE BERICHTEN hieronder, niet op eerdere discussiepunten.\n`
+        : generatedMessages.length > 0
+        ? `\n## Context:\nHet gesprek heeft ${generatedMessages.length} berichten. Reageer ALLEEN op de LAATSTE BERICHTEN hieronder.\n`
         : "";
 
     const phaseInstructions = {
@@ -266,10 +264,32 @@ export async function genereerGesprekBerichten(opties: {
         "Dit is het EINDE van het gesprek. Politici moeten nu naar elkaar toebewegen. Laat zien dat er ruimte is voor een compromis of dat er concrete vervolgstappen worden gezet. Eindig constructief met perspectief op een oplossing.",
     };
 
-    // Laatste 5 berichten - MEEST BELANGRIJK voor reacties
+    // Laatste 5 berichten - ENIGE BASIS voor reacties
     const recentMessages = generatedMessages.slice(-5);
     const lastSpeakerContext = recentMessages.length > 0
-      ? `\n## ⚠️ LAATSTE BERICHTEN - REAGEER HIEROP:\n${recentMessages.map((m, i) => `[${i + 1}] ${m.deelnemerName}: "${m.message}"`).join('\n')}\n\n🎯 CONTROLEER JEZELF:\n1. Lees de laatste berichten GOED. Reageer ALLEEN op wat hier LETTERLIJK staat.\n2. Als je iemand bij naam aanspreekt ("Frans, ...", "Dilan, ..."), CHECK: wat heeft die persoon net gezegd? Reageer daarop.\n3. VERBODEN: Fictieve argumenten verzinnen die niemand heeft gemaakt.\n4. Als je zetels noemt, moet dat LOGISCH zijn in de context van wat net gezegd is.\n5. Test: Kun je je reactie onderbouwen met een citaat uit de laatste berichten? Zo nee, STOP en pas aan.\n`
+      ? `\n## ⚠️ LAATSTE BERICHTEN - DIT IS ALLES WAT JE HEBT:\n${recentMessages.map((m, i) => `[${i + 1}] ${m.deelnemerName}: "${m.message}"`).join('\n')}\n\n🚨 KRITIEKE REGEL: Reageer UITSLUITEND op wat HIERBOVEN staat. NIETS anders.
+
+📋 VERPLICHTE CHECKLIST voor ELKE reactie:
+1. Als je iemand bij naam noemt ("Dilan, ..." of "Dat klopt niet, Frans"), CHECK:
+   - Staat die persoon in berichten [1] t/m [${recentMessages.length}]? ✓
+   - Reageer je op wat die persoon DAAR zei? ✓
+   - Niet op iets van eerder? ✓
+
+2. Als je een argument bekritiseert ("Dat is onzin", "Dat klopt niet"):
+   - Staat dat argument LETTERLIJK hierboven? ✓
+   - Kun je het citeren uit [1] t/m [${recentMessages.length}]? ✓
+
+3. Als je zetels noemt:
+   - Is dat relevant voor wat HIERBOVEN gezegd is? ✓
+
+❌ FOUT VOORBEELD:
+   Bericht [3]: Dilan: "De economie moet groeien"
+   FOUT reactie: "Caroline, dat is onzin" ← Caroline heeft niks gezegd!
+   
+✅ GOED VOORBEELD:
+   Bericht [3]: Dilan: "De economie moet groeien"
+   GOED reactie: "Dilan, economische groei is belangrijk, maar..."
+`
       : '';
     
     // Track wie er al gesproken heeft en hoe vaak
