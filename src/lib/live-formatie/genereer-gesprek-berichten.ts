@@ -100,6 +100,14 @@ const buildSystemMessage = (opties: {
   onderwerp: string;
   deelnemers: Deelnemer[];
 }) => {
+  // Sorteer deelnemers op zetels (hoog naar laag) voor duidelijke machtsverhoudingen
+  const sortedDeelnemers = [...opties.deelnemers].sort(
+    (a, b) => b.partij.zetels - a.partij.zetels
+  );
+  
+  const totalZetels = sortedDeelnemers.reduce((sum, d) => sum + d.partij.zetels, 0);
+  const majorityNeeded = 76; // Meerderheid in Tweede Kamer
+  
   return `
     # Rol
     Je bent een expert in het schrijven van realistische Nederlandse politieke onderhandelingen. 
@@ -108,13 +116,12 @@ const buildSystemMessage = (opties: {
     # Onderwerp
     ${opties.onderwerp}
     
-    # Deelnemers
-    ${opties.deelnemers
+    # Deelnemers (gesorteerd op zetels)
+    ${sortedDeelnemers
       .map(
         (deelnemer) => `
     - ${deelnemer.name}
-      - Partij: ${deelnemer.partij.name}
-      - Zetels: ${deelnemer.partij.zetels}
+      - Partij: ${deelnemer.partij.name} (${deelnemer.partij.zetels} zetels)
       - Tone of voice: ${deelnemer.toneOfVoice}${
           deelnemer.persoonlijkeDetails
             ? `\n      - Achtergrond: ${deelnemer.persoonlijkeDetails}`
@@ -131,6 +138,22 @@ const buildSystemMessage = (opties: {
     `
       )
       .join("\n")}
+    
+    # Zetelverdeling & Machtsbalans
+    - Totaal zetels aan tafel: ${totalZetels}
+    - Meerderheid nodig: ${majorityNeeded} zetels
+    - Grootste partij: ${sortedDeelnemers[0].partij.name} (${sortedDeelnemers[0].name}, ${sortedDeelnemers[0].partij.zetels} zetels)
+    - Kleinste partij: ${sortedDeelnemers[sortedDeelnemers.length - 1].partij.name} (${sortedDeelnemers[sortedDeelnemers.length - 1].name}, ${sortedDeelnemers[sortedDeelnemers.length - 1].partij.zetels} zetels)
+    
+    ## Strategisch gebruik van zetels in het gesprek
+    Politici kunnen en MOETEN hun zetels strategisch inzetten in hun argumentatie:
+    - **Grote partijen** (>20 zetels) kunnen hun mandaat benadrukken: "Met 37 zetels hebben we een duidelijk mandaat van de kiezer"
+    - **Kleine partijen** kunnen hun unieke positie benadrukken: "Jullie hebben mij nodig voor een meerderheid"
+    - Coalitiekansen benoemen: "Samen hebben wij X zetels, dat is genoeg voor..."
+    - Anderen motiveren: "Met jouw zetels erbij kunnen we dit realiseren"
+    - Realisme tonen: "Jullie hebben maar X zetels, dat is niet genoeg om dit door te drukken"
+    
+    ⚠️ BELANGRIJK: Laat politici regelmatig (maar niet overdreven) naar zetels verwijzen als dat strategisch logisch is!
     
     # Belangrijke Regels
     - Het gesprek moet realistisch en constructief zijn, gericht op het vinden van een compromis
@@ -169,6 +192,13 @@ const buildSystemMessage = (opties: {
     - Als iemand een provocerende uitspraak doet, laat anderen reageren
     - Niet elke politicus hoeft elke ronde te spreken
     - Laat het gesprek natuurlijk vloeien: wie zou nu logisch reageren?
+    
+    ⚠️ CRUCIAAL: REACTIES MOETEN LOGISCH AANSLUITEN
+    - Als je iemand bij naam aanspreekt (bijv. "Dilan, ..."), reageer dan ALLEEN op wat die persoon NET heeft gezegd
+    - VERBODEN: Reageren op iets wat NIET gezegd is. Lees de laatste berichten GOED.
+    - Als politicus A zegt "De economie moet groeien" en politicus B reageert met "Dat klopt niet", dan moet dat gaan over de economie, niet over iets anders
+    - Test jezelf: KAN ik mijn reactie onderbouwen met een letterlijk citaat uit de laatste berichten? Zo nee, pas de reactie aan.
+    - Zetels alleen noemen als het RELEVANT is voor het punt dat net gemaakt is, niet uit het niets
     
     - Gebruik de partijstandpunten en tone of voice van elke politicus
     - Houd het constructief maar wel met realistische spanning en meningsverschillen
@@ -215,12 +245,14 @@ export async function genereerGesprekBerichten(opties: {
       { phase, remainingMessages }
     );
 
-    // Korte samenvatting van het gesprek (als het lang wordt)
+    // Context van eerdere berichten (NIET de laatste 5, die worden apart getoond)
+    // We tonen alleen eerdere berichten als er meer dan 5 berichten zijn
     const conversationSummaryContext =
       generatedMessages.length > 10
-        ? `\n## Samenvatting gesprek tot nu toe:\nEr zijn ${generatedMessages.length} berichten uitgewisseld. Het gesprek gaat over: ${opties.onderwerp}\n`
-        : generatedMessages.length > 0
-        ? `\n## Gesprek tot nu toe:\n${generatedMessages
+        ? `\n## Eerdere berichten (samenvatting):\nEr zijn al ${generatedMessages.length} berichten uitgewisseld over: ${opties.onderwerp}. De discussie is gaande.\n`
+        : generatedMessages.length > 5
+        ? `\n## Eerdere berichten (voor context):\n${generatedMessages
+            .slice(0, -5)  // Alleen berichten VOOR de laatste 5
             .map((m) => `${m.deelnemerName}: ${m.message}`)
             .join("\n")}\n`
         : "";
@@ -237,7 +269,7 @@ export async function genereerGesprekBerichten(opties: {
     // Laatste 5 berichten - MEEST BELANGRIJK voor reacties
     const recentMessages = generatedMessages.slice(-5);
     const lastSpeakerContext = recentMessages.length > 0
-      ? `\n## ⚠️ LAATSTE BERICHTEN - REAGEER HIEROP:\n${recentMessages.map((m, i) => `[${i + 1}] ${m.deelnemerName}: "${m.message}"`).join('\n')}\n\n🎯 Lees deze laatste berichten GOED. Reageer DIRECT op wat hier gezegd wordt.\nAls je iemand bekritiseert, zorg dat het gaat over WAT DIE PERSOON NET ZEI.\n`
+      ? `\n## ⚠️ LAATSTE BERICHTEN - REAGEER HIEROP:\n${recentMessages.map((m, i) => `[${i + 1}] ${m.deelnemerName}: "${m.message}"`).join('\n')}\n\n🎯 CONTROLEER JEZELF:\n1. Lees de laatste berichten GOED. Reageer ALLEEN op wat hier LETTERLIJK staat.\n2. Als je iemand bij naam aanspreekt ("Frans, ...", "Dilan, ..."), CHECK: wat heeft die persoon net gezegd? Reageer daarop.\n3. VERBODEN: Fictieve argumenten verzinnen die niemand heeft gemaakt.\n4. Als je zetels noemt, moet dat LOGISCH zijn in de context van wat net gezegd is.\n5. Test: Kun je je reactie onderbouwen met een citaat uit de laatste berichten? Zo nee, STOP en pas aan.\n`
       : '';
     
     // Track wie er al gesproken heeft en hoe vaak
