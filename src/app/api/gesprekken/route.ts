@@ -7,6 +7,7 @@ import {
 } from "@/repository";
 import { genereerGesprekBerichten } from "@/lib/live-formatie/genereer-gesprek-berichten";
 import { genereerCompromis } from "@/lib/live-formatie/genereer-compromis";
+import { checkContentSafety, genereerTitel } from "@/lib/live-formatie/genereer-titel";
 import { GESPREK_DURATION_MINUTES, MIN_DEELNEMERS_FOR_GESPREK } from "@/config";
 
 const logger = createLogger("api/gesprekken");
@@ -56,14 +57,37 @@ export async function POST(request: NextRequest) {
         return;
       }
 
-      // Step 1: Voorbereiden (0%)
+      // Step 1: Content safety check (0%)
       await sendEvent({
         type: "progress",
         percentage: 0,
-        message: "Voorbereiden...",
+        message: "Content controleren...",
       });
 
-      // Step 2: Fetch deelnemers (10%)
+      const safetyCheck = await checkContentSafety(onderwerp);
+      if (!safetyCheck.safe) {
+        await sendEvent({
+          type: "error",
+          message: `Oepsie! Deze content is niet toegestaan. ${safetyCheck.reason || "Probeer een ander onderwerp."}`,
+        });
+        await writer.close();
+        return;
+      }
+
+      // Step 2: Generate sanitized title (5%)
+      await sendEvent({
+        type: "progress",
+        percentage: 5,
+        message: "Titel genereren...",
+      });
+
+      const gesaniteerdOnderwerp = await genereerTitel(onderwerp);
+      logger.info("Title generated", {
+        original: onderwerp,
+        sanitized: gesaniteerdOnderwerp,
+      });
+
+      // Step 3: Fetch deelnemers (10%)
       await sendEvent({
         type: "progress",
         percentage: 10,
@@ -103,7 +127,7 @@ export async function POST(request: NextRequest) {
       );
 
       const gesprekBerichten = await genereerGesprekBerichten({
-        onderwerp,
+        onderwerp: gesaniteerdOnderwerp,
         deelnemers: geselecteerdeDeelnemers,
         startAt,
         endAt,
@@ -127,7 +151,7 @@ export async function POST(request: NextRequest) {
       });
 
       const compromis = await genereerCompromis({
-        onderwerp,
+        onderwerp: gesaniteerdOnderwerp,
         deelnemers: geselecteerdeDeelnemers,
         berichten: gesprekBerichten,
       });
@@ -148,7 +172,7 @@ export async function POST(request: NextRequest) {
       });
 
       const gesprek = await createGesprek({
-        onderwerp,
+        onderwerp: gesaniteerdOnderwerp,
         deelnemerIds,
         compromis,
         startAt,
