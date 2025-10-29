@@ -100,6 +100,14 @@ const buildSystemMessage = (opties: {
   onderwerp: string;
   deelnemers: Deelnemer[];
 }) => {
+  // Sorteer deelnemers op zetels (hoog naar laag) voor duidelijke machtsverhoudingen
+  const sortedDeelnemers = [...opties.deelnemers].sort(
+    (a, b) => b.partij.zetels - a.partij.zetels
+  );
+  
+  const totalZetels = sortedDeelnemers.reduce((sum, d) => sum + d.partij.zetels, 0);
+  const majorityNeeded = 76; // Meerderheid in Tweede Kamer
+  
   return `
     # Rol
     Je bent een expert in het schrijven van realistische Nederlandse politieke onderhandelingen. 
@@ -108,13 +116,12 @@ const buildSystemMessage = (opties: {
     # Onderwerp
     ${opties.onderwerp}
     
-    # Deelnemers
-    ${opties.deelnemers
+    # Deelnemers (gesorteerd op zetels)
+    ${sortedDeelnemers
       .map(
         (deelnemer) => `
     - ${deelnemer.name}
-      - Partij: ${deelnemer.partij.name}
-      - Zetels: ${deelnemer.partij.zetels}
+      - Partij: ${deelnemer.partij.name} (${deelnemer.partij.zetels} zetels)
       - Tone of voice: ${deelnemer.toneOfVoice}${
           deelnemer.persoonlijkeDetails
             ? `\n      - Achtergrond: ${deelnemer.persoonlijkeDetails}`
@@ -131,6 +138,22 @@ const buildSystemMessage = (opties: {
     `
       )
       .join("\n")}
+    
+    # Zetelverdeling & Machtsbalans
+    - Totaal zetels aan tafel: ${totalZetels}
+    - Meerderheid nodig: ${majorityNeeded} zetels
+    - Grootste partij: ${sortedDeelnemers[0].partij.name} (${sortedDeelnemers[0].name}, ${sortedDeelnemers[0].partij.zetels} zetels)
+    - Kleinste partij: ${sortedDeelnemers[sortedDeelnemers.length - 1].partij.name} (${sortedDeelnemers[sortedDeelnemers.length - 1].name}, ${sortedDeelnemers[sortedDeelnemers.length - 1].partij.zetels} zetels)
+    
+    ## Strategisch gebruik van zetels in het gesprek
+    Politici kunnen en MOETEN hun zetels strategisch inzetten in hun argumentatie:
+    - **Grote partijen** (>20 zetels) kunnen hun mandaat benadrukken: "Met 37 zetels hebben we een duidelijk mandaat van de kiezer"
+    - **Kleine partijen** kunnen hun unieke positie benadrukken: "Jullie hebben mij nodig voor een meerderheid"
+    - Coalitiekansen benoemen: "Samen hebben wij X zetels, dat is genoeg voor..."
+    - Anderen motiveren: "Met jouw zetels erbij kunnen we dit realiseren"
+    - Realisme tonen: "Jullie hebben maar X zetels, dat is niet genoeg om dit door te drukken"
+    
+    ⚠️ BELANGRIJK: Laat politici regelmatig (maar niet overdreven) naar zetels verwijzen als dat strategisch logisch is!
     
     # Belangrijke Regels
     - Het gesprek moet realistisch en constructief zijn, gericht op het vinden van een compromis
@@ -169,6 +192,13 @@ const buildSystemMessage = (opties: {
     - Als iemand een provocerende uitspraak doet, laat anderen reageren
     - Niet elke politicus hoeft elke ronde te spreken
     - Laat het gesprek natuurlijk vloeien: wie zou nu logisch reageren?
+    
+    ⚠️ CRUCIAAL: REACTIES MOETEN LOGISCH AANSLUITEN
+    - Als je iemand bij naam aanspreekt (bijv. "Dilan, ..."), reageer dan ALLEEN op wat die persoon NET heeft gezegd
+    - VERBODEN: Reageren op iets wat NIET gezegd is. Lees de laatste berichten GOED.
+    - Als politicus A zegt "De economie moet groeien" en politicus B reageert met "Dat klopt niet", dan moet dat gaan over de economie, niet over iets anders
+    - Test jezelf: KAN ik mijn reactie onderbouwen met een letterlijk citaat uit de laatste berichten? Zo nee, pas de reactie aan.
+    - Zetels alleen noemen als het RELEVANT is voor het punt dat net gemaakt is, niet uit het niets
     
     - Gebruik de partijstandpunten en tone of voice van elke politicus
     - Houd het constructief maar wel met realistische spanning en meningsverschillen
@@ -215,14 +245,14 @@ export async function genereerGesprekBerichten(opties: {
       { phase, remainingMessages }
     );
 
-    // Korte samenvatting van het gesprek (als het lang wordt)
+    // Context: ALLEEN een samenvatting bij lange gesprekken
+    // We tonen GEEN individuele eerdere berichten om verwarring te voorkomen
+    // De AI mag ALLEEN reageren op de laatste 5 berichten
     const conversationSummaryContext =
-      generatedMessages.length > 10
-        ? `\n## Samenvatting gesprek tot nu toe:\nEr zijn ${generatedMessages.length} berichten uitgewisseld. Het gesprek gaat over: ${opties.onderwerp}\n`
+      generatedMessages.length > 15
+        ? `\n## Context:\nEr zijn al ${generatedMessages.length} berichten uitgewisseld. Het gesprek over "${opties.onderwerp}" is in volle gang.\n\n⚠️ LET OP: Reageer ALLEEN op de LAATSTE BERICHTEN hieronder, niet op eerdere discussiepunten.\n`
         : generatedMessages.length > 0
-        ? `\n## Gesprek tot nu toe:\n${generatedMessages
-            .map((m) => `${m.deelnemerName}: ${m.message}`)
-            .join("\n")}\n`
+        ? `\n## Context:\nHet gesprek heeft ${generatedMessages.length} berichten. Reageer ALLEEN op de LAATSTE BERICHTEN hieronder.\n`
         : "";
 
     const phaseInstructions = {
@@ -234,10 +264,32 @@ export async function genereerGesprekBerichten(opties: {
         "Dit is het EINDE van het gesprek. Politici moeten nu naar elkaar toebewegen. Laat zien dat er ruimte is voor een compromis of dat er concrete vervolgstappen worden gezet. Eindig constructief met perspectief op een oplossing.",
     };
 
-    // Laatste 5 berichten - MEEST BELANGRIJK voor reacties
+    // Laatste 5 berichten - ENIGE BASIS voor reacties
     const recentMessages = generatedMessages.slice(-5);
     const lastSpeakerContext = recentMessages.length > 0
-      ? `\n## ⚠️ LAATSTE BERICHTEN - REAGEER HIEROP:\n${recentMessages.map((m, i) => `[${i + 1}] ${m.deelnemerName}: "${m.message}"`).join('\n')}\n\n🎯 Lees deze laatste berichten GOED. Reageer DIRECT op wat hier gezegd wordt.\nAls je iemand bekritiseert, zorg dat het gaat over WAT DIE PERSOON NET ZEI.\n`
+      ? `\n## ⚠️ LAATSTE BERICHTEN - DIT IS ALLES WAT JE HEBT:\n${recentMessages.map((m, i) => `[${i + 1}] ${m.deelnemerName}: "${m.message}"`).join('\n')}\n\n🚨 KRITIEKE REGEL: Reageer UITSLUITEND op wat HIERBOVEN staat. NIETS anders.
+
+📋 VERPLICHTE CHECKLIST voor ELKE reactie:
+1. Als je iemand bij naam noemt ("Dilan, ..." of "Dat klopt niet, Frans"), CHECK:
+   - Staat die persoon in berichten [1] t/m [${recentMessages.length}]? ✓
+   - Reageer je op wat die persoon DAAR zei? ✓
+   - Niet op iets van eerder? ✓
+
+2. Als je een argument bekritiseert ("Dat is onzin", "Dat klopt niet"):
+   - Staat dat argument LETTERLIJK hierboven? ✓
+   - Kun je het citeren uit [1] t/m [${recentMessages.length}]? ✓
+
+3. Als je zetels noemt:
+   - Is dat relevant voor wat HIERBOVEN gezegd is? ✓
+
+❌ FOUT VOORBEELD:
+   Bericht [3]: Dilan: "De economie moet groeien"
+   FOUT reactie: "Caroline, dat is onzin" ← Caroline heeft niks gezegd!
+   
+✅ GOED VOORBEELD:
+   Bericht [3]: Dilan: "De economie moet groeien"
+   GOED reactie: "Dilan, economische groei is belangrijk, maar..."
+`
       : '';
     
     // Track wie er al gesproken heeft en hoe vaak

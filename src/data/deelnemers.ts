@@ -33,7 +33,7 @@ export const deelnemers: Deelnemer[] = [
       name: "Partij voor de Vrijheid",
       short: "PVV",
       logo: "pvv.png",
-      zetels: 36,
+      zetels: 25,
       programma: {
         standpunten: [
           "Volledige immigratiestop uit islamitische landen",
@@ -68,7 +68,7 @@ export const deelnemers: Deelnemer[] = [
       name: "GroenLinks–PvdA",
       short: "GL-PvdA",
       logo: "glpvdA.png",
-      zetels: 25,
+      zetels: 20,
       programma: {
         standpunten: [
           "65% CO₂-reductie in 2030, volledig klimaatneutraal in 2040",
@@ -103,7 +103,7 @@ export const deelnemers: Deelnemer[] = [
       name: "Volkspartij voor Vrijheid en Democratie",
       short: "VVD",
       logo: "vvd.png",
-      zetels: 24,
+      zetels: 23,
       programma: {
         standpunten: [
           "Passende zorg: patiënt en zorgverlener beslissen samen",
@@ -138,7 +138,7 @@ export const deelnemers: Deelnemer[] = [
       name: "Nieuw Sociaal Contract",
       short: "NSC",
       logo: "nsc.png",
-      zetels: 20,
+      zetels: 0,
       programma: {
         standpunten: [
           "Passende zorg: prikkel tot behandelen minder maken",
@@ -173,7 +173,7 @@ export const deelnemers: Deelnemer[] = [
       name: "Democraten 66",
       short: "D66",
       logo: "d66.png",
-      zetels: 9,
+      zetels: 27,
       programma: {
         standpunten: [
           "Onnodige of niet-effectieve zorg niet meer vergoeden",
@@ -208,7 +208,7 @@ export const deelnemers: Deelnemer[] = [
       name: "BoerBurgerBeweging",
       short: "BBB",
       logo: "bbb.png",
-      zetels: 7,
+      zetels: 4,
       programma: {
         standpunten: [
           "Alleen bewezen werkzame zorg in basisverzekering",
@@ -243,7 +243,7 @@ export const deelnemers: Deelnemer[] = [
       name: "Christen‑Democratisch Appèl",
       short: "CDA",
       logo: "cda.png",
-      zetels: 5,
+      zetels: 19,
       programma: {
         standpunten: [
           "Beweging naar voorkomen van zorgbehoefte",
@@ -278,7 +278,7 @@ export const deelnemers: Deelnemer[] = [
       name: "Socialistische Partij",
       short: "SP",
       logo: "sp.png",
-      zetels: 7,
+      zetels: 3,
       programma: {
         standpunten: [
           "Afschaffen marktwerking en Nationaal Zorgfonds invoeren",
@@ -348,7 +348,7 @@ export const deelnemers: Deelnemer[] = [
       name: "Partij voor de Dieren",
       short: "PvdD",
       logo: "pvdd.png",
-      zetels: 5,
+      zetels: 3,
       programma: {
         standpunten: [
           "Zorg passend en niet langer dan noodzakelijk",
@@ -383,7 +383,7 @@ export const deelnemers: Deelnemer[] = [
       name: "Forum voor Democratie",
       short: "FVD",
       logo: "fvd.png",
-      zetels: 3,
+      zetels: 6,
       programma: {
         standpunten: [
           "Streven naar uittreding uit EU via intelligente exit",
@@ -453,7 +453,7 @@ export const deelnemers: Deelnemer[] = [
       name: "ChristenUnie",
       short: "CU",
       logo: "cu.png",
-      zetels: 3,
+      zetels: 2,
       programma: {
         standpunten: [
           "Zorginstituut meer instrumenten voor passende zorg",
@@ -488,7 +488,7 @@ export const deelnemers: Deelnemer[] = [
       name: "Volt Nederland",
       short: "VOLT",
       logo: "volt.png",
-      zetels: 2,
+      zetels: 1,
       programma: {
         standpunten: [
           "Basispakket zorg niet uitkleden",
@@ -523,7 +523,7 @@ export const deelnemers: Deelnemer[] = [
       name: "JA21",
       short: "JA21",
       logo: "ja21.png",
-      zetels: 1,
+      zetels: 9,
       programma: {
         standpunten: [
           "Herwaarderen ondernemerschap en verlaging lasten",
