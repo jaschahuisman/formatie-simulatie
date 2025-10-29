@@ -22,6 +22,7 @@ export async function createGesprek(parameters: {
   compromis: string;
   startAt: Date;
   endAt: Date;
+  deviceId?: string;
 }) {
   try {
     logger.debug("Creating gesprek", { onderwerp: parameters.onderwerp });
@@ -33,6 +34,7 @@ export async function createGesprek(parameters: {
         onderwerp: parameters.onderwerp,
         deelnemerIds: parameters.deelnemerIds,
         compromis: parameters.compromis,
+        deviceId: parameters.deviceId,
       })
       .returning()
       .then((result) => result[0]);

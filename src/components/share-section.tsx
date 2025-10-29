@@ -59,7 +59,7 @@ export function ShareSection({ url, title }: Props) {
         <h3 className="text-lg font-bold text-center">
           Deel dit formatiegesprek
         </h3>
-        <p className="text-sm text-center text-background/80">
+        <p className="text-sm text-center text-background/90">
           Laat zien dat politieke partijen wél tot een compromis kunnen komen.{" "}
         </p>
       </div>

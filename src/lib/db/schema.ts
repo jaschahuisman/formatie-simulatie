@@ -18,6 +18,7 @@ export const gesprekkenTable = pgTable("gesprekken", {
   onderwerp: text("onderwerp").notNull(),
   deelnemerIds: jsonb("deelnemer_ids").notNull().$type<number[]>(),
   compromis: text("compromis").notNull(),
+  deviceId: text("device_id"),
 });
 
 export type Gesprek = typeof gesprekkenTable.$inferSelect;

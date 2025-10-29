@@ -6,6 +6,7 @@ import {
   UsersIcon,
   CheckCircle2Icon,
   HandshakeIcon,
+  ArrowUpIcon,
 } from "lucide-react";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
@@ -14,6 +15,7 @@ import { useEffect, useRef, useState } from "react";
 import type { Bericht as BerichtType, Gesprek } from "@/lib/db/schema";
 import type { Deelnemer } from "@/data/deelnemers";
 import { Bericht } from "@/components/bericht";
+import { TypingIndicator } from "@/components/typing-indicator";
 import { Countdown } from "@/components/countdown";
 import { MAJORITY_ZETELS } from "@/config";
 import { cn } from "@/lib/utils";
@@ -25,6 +27,14 @@ type Props = {
   showCompromis?: boolean;
 };
 
+// Generate a deterministic typing delay (4-10 seconds) for each message based on its ID
+function getTypingDelay(messageId: number): number {
+  // Use message ID to seed a pseudo-random delay between 4000-10000ms
+  const seed = messageId * 9301 + 49297; // Simple LCG constants
+  const random = (seed % 233280) / 233280; // Normalize to 0-1
+  return 4000 + Math.floor(random * 6000); // 4-10 seconds
+}
+
 export function Gesprek({
   gesprek,
   berichten,
@@ -33,6 +43,7 @@ export function Gesprek({
 }: Props) {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [isFastForwarded, setIsFastForwarded] = useState(false);
+  const [showScrollToTop, setShowScrollToTop] = useState(false);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const prevMessagesLength = useRef<number>(0);
   const didInitialScroll = useRef<boolean>(false);
@@ -47,10 +58,35 @@ export function Gesprek({
     currentTime > new Date(gesprek.startAt) &&
     currentTime < new Date(lastMessageTimestamp);
 
-  // Filter messages that should be visible (timestamp <= currentTime or fast-forwarded)
-  const visibleMessages = isFastForwarded
-    ? berichten
-    : berichten.filter((msg) => new Date(msg.timestamp) <= currentTime);
+  // Create a list of items to render (messages and typing indicators)
+  type RenderItem =
+    | { type: "message"; data: BerichtType & { deelnemer: Deelnemer } }
+    | { type: "typing"; data: BerichtType & { deelnemer: Deelnemer } };
+
+  const renderItems: RenderItem[] = [];
+
+  if (isFastForwarded) {
+    // When fast-forwarded, just show all messages
+    berichten.forEach((msg) => {
+      renderItems.push({ type: "message", data: msg });
+    });
+  } else {
+    // When live or replaying, show messages and typing indicators based on time
+    berichten.forEach((msg) => {
+      const messageTime = new Date(msg.timestamp);
+      const typingDelay = getTypingDelay(msg.id);
+      const typingStartTime = new Date(messageTime.getTime() - typingDelay);
+
+      // Show typing indicator if we're in the typing window
+      if (currentTime >= typingStartTime && currentTime < messageTime) {
+        renderItems.push({ type: "typing", data: msg });
+      }
+      // Show actual message if it's time
+      else if (currentTime >= messageTime) {
+        renderItems.push({ type: "message", data: msg });
+      }
+    });
+  }
 
   // Check if conversation is over
   const isConversationOver =
@@ -58,6 +94,25 @@ export function Gesprek({
 
   const handleFastForward = () => {
     setIsFastForwarded(true);
+  };
+
+  const handleScrollToTop = () => {
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  const handleScroll = () => {
+    if (messagesContainerRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } =
+        messagesContainerRef.current;
+      // Show button when at the bottom (within 50px of bottom)
+      const isAtBottom = scrollHeight - scrollTop - clientHeight < 50;
+      setShowScrollToTop(isAtBottom);
+    }
   };
 
   // Update current time every second to reveal new messages when conversation is live
@@ -79,7 +134,7 @@ export function Gesprek({
         behavior: "auto",
       });
       didInitialScroll.current = true;
-      prevMessagesLength.current = visibleMessages.length;
+      prevMessagesLength.current = renderItems.length;
     }
     // Only run on mount
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -90,15 +145,15 @@ export function Gesprek({
     if (
       messagesContainerRef.current &&
       prevMessagesLength.current !== undefined &&
-      visibleMessages.length > prevMessagesLength.current
+      renderItems.length > prevMessagesLength.current
     ) {
       messagesContainerRef.current.scrollTo({
         top: messagesContainerRef.current.scrollHeight,
         behavior: "smooth",
       });
     }
-    prevMessagesLength.current = visibleMessages.length;
-  }, [visibleMessages.length]);
+    prevMessagesLength.current = renderItems.length;
+  }, [renderItems.length]);
 
   // Calculate total seats of participating parties
   const totalZetels = deelnemers.reduce(
@@ -108,10 +163,11 @@ export function Gesprek({
   const hasMajority = totalZetels >= MAJORITY_ZETELS;
 
   return (
-    <div className="w-full space-y-4 relative">
+    <div className="w-full relative">
       <div
         className="w-full h-full max-h-[600px] border p-0 flex flex-col gap-4 overflow-y-auto relative bg-background rounded-4xl"
         ref={messagesContainerRef}
+        onScroll={handleScroll}
       >
         <div className="sticky top-0 flex items-center justify-between gap-4 p-5 bg-background border-b">
           <h2 className="text-xl font-bold truncate">{gesprek.onderwerp}</h2>
@@ -142,24 +198,65 @@ export function Gesprek({
             )}
           </div>
         </div>
+
+        {/* Participants list */}
+        {deelnemers.length > 0 && (
+          <div className="px-5 pt-5">
+            <p className="text-sm text-muted-foreground text-center">
+              {deelnemers
+                .map((d) => d.name.split(" ")[0])
+                .map((firstName, idx, arr) => {
+                  if (idx === arr.length - 1 && arr.length > 1) {
+                    return `& ${firstName}`;
+                  }
+                  return firstName;
+                })
+                .join(", ")
+                .replace(", &", " &")}{" "}
+              doen mee aan dit gesprek
+            </p>
+          </div>
+        )}
+
         <div
           className={cn(
             "flex flex-col gap-5 w-full px-5 pb-10",
             showCompromis && isConversationOver && gesprek.compromis && "pb-0"
           )}
         >
-          {visibleMessages.map((msg) => (
-            <Bericht
-              key={msg.id}
-              name={msg.deelnemer?.name || "Unknown"}
-              content={msg.content}
-              time={new Date(msg.timestamp)}
-              zetels={msg.deelnemer?.partij?.zetels || 0}
-              image={msg.deelnemer?.image}
-            />
-          ))}
+          {renderItems.map((item, index) => {
+            const previousItem = index > 0 ? renderItems[index - 1] : null;
+            const isConsecutive =
+              item.type === "message" &&
+              previousItem?.type === "message" &&
+              previousItem.data.deelnemerId === item.data.deelnemerId;
 
-          {visibleMessages.length === 0 && (
+            if (item.type === "typing") {
+              return (
+                <TypingIndicator
+                  key={`typing-${item.data.id}`}
+                  name={item.data.deelnemer?.name || "Unknown"}
+                  image={item.data.deelnemer?.image}
+                  zetels={item.data.deelnemer?.partij?.zetels || 0}
+                />
+              );
+            }
+
+            return (
+              <Bericht
+                key={item.data.id}
+                name={item.data.deelnemer?.name || "Unknown"}
+                content={item.data.content}
+                time={new Date(item.data.timestamp)}
+                zetels={item.data.deelnemer?.partij?.zetels || 0}
+                image={item.data.deelnemer?.image}
+                showHeader={!isConsecutive}
+                isConsecutive={isConsecutive}
+              />
+            );
+          })}
+
+          {renderItems.length === 0 && (
             <div className="flex items-center justify-center">
               <div className="text-muted-foreground flex items-center gap-2">
                 Dit gesprek begint binnenkort...
@@ -190,7 +287,7 @@ export function Gesprek({
                   )}
                 </div>
                 <h3 className="text-xl font-bold">
-                  {isAgreement ? "Akkoord Bereikt!" : "Compromis"}
+                  {isAgreement ? "Akkoord bereikt!" : "Compromis"}
                 </h3>
               </div>
 
@@ -244,6 +341,19 @@ export function Gesprek({
             )}
         </div>
       </div>
+
+      {/* Scroll to Top Button */}
+      {showScrollToTop && isConversationOver && (
+        <Button
+          onClick={handleScrollToTop}
+          variant="outline"
+          className="absolute bottom-6 right-8 shadow-lg z-100"
+          size="sm"
+        >
+          <ArrowUpIcon className="size-4 mr-2" />
+          Lees het gesprek
+        </Button>
+      )}
     </div>
   );
 }

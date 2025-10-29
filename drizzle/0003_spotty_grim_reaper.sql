@@ -1,0 +1,1 @@
+ALTER TABLE "gesprekken" ADD COLUMN "device_id" text;

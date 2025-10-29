@@ -8,11 +8,15 @@ import {
 import { genereerGesprekBerichten } from "@/lib/live-formatie/genereer-gesprek-berichten";
 import { genereerCompromis } from "@/lib/live-formatie/genereer-compromis";
 import { GESPREK_DURATION_MINUTES, MIN_DEELNEMERS_FOR_GESPREK } from "@/config";
+import { getDeviceId } from "@/lib/device";
 
 const logger = createLogger("api/gesprekken");
 
 export async function POST(request: NextRequest) {
   const encoder = new TextEncoder();
+
+  // Get device ID (middleware will have already ensured it exists)
+  const deviceId = await getDeviceId();
 
   // Create a TransformStream to send SSE
   const stream = new TransformStream();
@@ -153,6 +157,7 @@ export async function POST(request: NextRequest) {
         compromis,
         startAt,
         endAt,
+        deviceId,
       });
 
       await addBerichtenToGesprek(gesprek.id, gesprekBerichten);

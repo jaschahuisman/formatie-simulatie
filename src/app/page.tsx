@@ -149,7 +149,7 @@ export default async function Home() {
             height={200}
           />
 
-          <h2 className="text-2xl font-bold max-w-xl text-center text-pink-300 font-comic">
+          <h2 className="text-2xl font-bold max-w-xl text-center text-pink-200 font-comic">
             Maak je eigen formatiegesprek en ontdek hoe partijen tot een
             compromis kunnen komen.
           </h2>

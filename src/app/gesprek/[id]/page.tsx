@@ -7,7 +7,9 @@ import { createLogger } from "@/lib/logger";
 import Link from "next/link";
 import { Metadata } from "next";
 import Image from "next/image";
-import { ArrowLeftIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { getDeviceId } from "@/lib/device";
+import { ArrowRightIcon, RotateCcwIcon } from "lucide-react";
 
 const logger = createLogger("app/gesprek/[id]");
 
@@ -47,20 +49,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       siteName: "Live Formatie",
       locale: "nl_NL",
       url: gesprekUrl,
-      images: [
-        {
-          url: "/logo.png",
-          width: 800,
-          height: 200,
-          alt: "Live Formatie Logo",
-        },
-      ],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: ["/logo.png"],
     },
   };
 }
@@ -88,19 +81,17 @@ export default async function GesprekPage({ params }: Props) {
     deelnemersCount: deelnemers.length,
   });
 
+  // Check if the current user created this gesprek
+  const currentDeviceId = await getDeviceId();
+  const isCreator =
+    currentDeviceId && gesprek.deviceId && currentDeviceId === gesprek.deviceId;
+
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL!;
   const gesprekUrl = `${baseUrl}/gesprek/${id}`;
 
   return (
     <Page>
       <Container>
-        <Link
-          href="/"
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2"
-        >
-          <ArrowLeftIcon className="size-4" /> Terug naar home
-        </Link>
-
         <div className="flex flex-col items-center">
           <Link href="/">
             <Image
@@ -123,10 +114,20 @@ export default async function GesprekPage({ params }: Props) {
           showCompromis={true}
         />
 
-        <ShareSection
-          url={gesprekUrl}
-          title={`Bekijk mijn simulatie van een formatiegesprek over ${gesprek.onderwerp}!`}
-        />
+        <div className="flex flex-col gap-4">
+          <Button asChild size="lg" className="text-xl">
+            <Link href="/">
+              {isCreator && <RotateCcwIcon className="size-4" />}
+              {isCreator ? "Begin opnieuw" : "Maak je eigen formatiegesprek"}
+              {!isCreator && <ArrowRightIcon className="size-4" />}
+            </Link>
+          </Button>
+
+          <ShareSection
+            url={gesprekUrl}
+            title={`Bekijk mijn simulatie van een formatiegesprek over ${gesprek.onderwerp}!`}
+          />
+        </div>
       </Container>
     </Page>
   );
