@@ -28,7 +28,7 @@ export function buildMessageSchema(deelnemers: Deelnemer[]) {
   const deelnemerNames = deelnemers.map((d) => d.name);
   
   const MIN_TURNS = 2;
-  const MAX_TURNS = 3;
+  const MAX_TURNS = 5; // Accepteer tot 5 turns in schema, maar we truncaten later
   const MIN_MESSAGES_PER_TURN = 1;
   const MAX_MESSAGES_PER_TURN = 3;
 
@@ -54,7 +54,7 @@ export function buildMessageSchema(deelnemers: Deelnemer[]) {
     .min(MIN_TURNS)
     .max(MAX_TURNS)
     .describe(
-      `EXACT ${MIN_TURNS} of ${MAX_TURNS} beurten. NIET MEER DAN ${MAX_TURNS} BEURTEN. Dit is een harde limiet.`
+      `Array van gespreksbeurten. Bij voorkeur 2-3 beurten. Elke beurt = één politicus die reageert met 1-3 berichten.`
     );
 }
 
@@ -335,7 +335,19 @@ WIE zou logisch reageren op wat er net gezegd is? Overweeg:
         rawResponse: JSON.stringify(response.object, null, 2)
       });
 
-      const aiMessages = response.object;
+      // Truncate naar max 3 turns - AI genereert vaak 4-5 turns ondanks instructies
+      const MAX_TURNS_TO_USE = 3;
+      const aiMessages = response.object.length > MAX_TURNS_TO_USE
+        ? response.object.slice(0, MAX_TURNS_TO_USE)
+        : response.object;
+      
+      if (response.object.length > MAX_TURNS_TO_USE) {
+        logger.info(`AI generated ${response.object.length} turns, using first ${MAX_TURNS_TO_USE}`, {
+          generated: response.object.length,
+          used: aiMessages.length
+        });
+      }
+
       const newMessages = addDeelnemerIdsToAIGeneratedMessages(
         aiMessages,
         opties.deelnemers
