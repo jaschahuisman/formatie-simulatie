@@ -215,8 +215,11 @@ export async function genereerGesprekBerichten(opties: {
       { phase, remainingMessages }
     );
 
-    const conversationHistoryContext =
-      generatedMessages.length > 0
+    // Korte samenvatting van het gesprek (als het lang wordt)
+    const conversationSummaryContext =
+      generatedMessages.length > 10
+        ? `\n## Samenvatting gesprek tot nu toe:\nEr zijn ${generatedMessages.length} berichten uitgewisseld. Het gesprek gaat over: ${opties.onderwerp}\n`
+        : generatedMessages.length > 0
         ? `\n## Gesprek tot nu toe:\n${generatedMessages
             .map((m) => `${m.deelnemerName}: ${m.message}`)
             .join("\n")}\n`
@@ -231,16 +234,10 @@ export async function genereerGesprekBerichten(opties: {
         "Dit is het EINDE van het gesprek. Politici moeten nu naar elkaar toebewegen. Laat zien dat er ruimte is voor een compromis of dat er concrete vervolgstappen worden gezet. Eindig constructief met perspectief op een oplossing.",
     };
 
-    // Bepaal laatste spreker(s) voor context
-    const lastSpeakers = generatedMessages.length > 0
-      ? generatedMessages.slice(-3).map(m => ({
-          name: m.deelnemerName,
-          message: m.message
-        }))
-      : [];
-    
-    const lastSpeakerContext = lastSpeakers.length > 0
-      ? `\n## Laatste berichten (reageer hierop):\n${lastSpeakers.map(s => `${s.name}: ${s.message}`).join('\n')}\n`
+    // Laatste 5 berichten - MEEST BELANGRIJK voor reacties
+    const recentMessages = generatedMessages.slice(-5);
+    const lastSpeakerContext = recentMessages.length > 0
+      ? `\n## ⚠️ LAATSTE BERICHTEN - REAGEER HIEROP:\n${recentMessages.map((m, i) => `[${i + 1}] ${m.deelnemerName}: "${m.message}"`).join('\n')}\n\n🎯 Lees deze laatste berichten GOED. Reageer DIRECT op wat hier gezegd wordt.\nAls je iemand bekritiseert, zorg dat het gaat over WAT DIE PERSOON NET ZEI.\n`
       : '';
     
     // Track wie er al gesproken heeft en hoe vaak
@@ -266,7 +263,7 @@ export async function genereerGesprekBerichten(opties: {
       : '\n## BELANGRIJK - Sprekersverdeling:\nVarieer de sprekers! Laat ook andere politici aan het woord komen, niet alleen degenen die al veel gezegd hebben.\n';
 
     const userPrompt = isLastBatch
-      ? `${conversationHistoryContext}${lastSpeakerContext}${speakerDistributionContext}
+      ? `${conversationSummaryContext}${lastSpeakerContext}${speakerDistributionContext}
 
 ## Fase: ${phase.toUpperCase()} 
 ${phaseInstructions[phase]}
@@ -281,11 +278,11 @@ HARDE LIMIET: Maximum 3 politici mogen reageren. Geen 4, geen 5.
 Het gesprek moet eindigen met toenadering en perspectief op een compromis of oplossing. 
 Laat politici concrete vervolgstappen noemen of ruimte laten voor een gezamenlijke aanpak.
 
-WIE zou logisch reageren op de laatste sprekers? Denk na over:
-- Wie wordt getriggerd door wat er net gezegd is?
-- Welke politici zouden elkaar willen steunen of tegenspreken?
+WIE zou logisch reageren op de LAATSTE BERICHTEN hierboven? Denk na over:
+- Wie wordt getriggerd door wat er net gezegd is IN DE LAATSTE BERICHTEN?
+- Reageer op de INHOUD van wat er net gezegd is, niet op oude discussies
 - Laat het gesprek natuurlijk naar een conclusie vloeien.`
-      : `${conversationHistoryContext}${lastSpeakerContext}${speakerDistributionContext}
+      : `${conversationSummaryContext}${lastSpeakerContext}${speakerDistributionContext}
 
 ## Fase: ${phase.toUpperCase()}
 ${phaseInstructions[phase]}
@@ -301,8 +298,9 @@ Berichten per beurt: 1-3 berichten
 HARDE LIMIET: Maximum 3 politici mogen reageren in deze ronde.
 Als je 4 of 5 politici wilt laten reageren: STOP. Dat is te veel.
 
-WIE zou logisch reageren op wat er net gezegd is? Overweeg:
-- Wie wordt getriggerd door de laatste spreker?
+WIE zou logisch reageren op de LAATSTE BERICHTEN hierboven? Overweeg:
+- Wie wordt getriggerd door wat er in de LAATSTE BERICHTEN gezegd is?
+- Reageer op de INHOUD van die specifieke berichten, niet op oude discussies
 - Zijn er rivalen die op elkaar zouden reageren?
 - Zijn er coalitiegenoten die elkaar zouden steunen?
 - Niet iedereen hoeft te spreken - focus op natuurlijke reacties.`;
