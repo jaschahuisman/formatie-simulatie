@@ -1,8 +1,20 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { ShareIcon, CopyIcon } from "lucide-react";
+import { CopyIcon } from "lucide-react";
 import { useState } from "react";
+import {
+  TwitterShareButton,
+  TwitterIcon,
+  LinkedinShareButton,
+  LinkedinIcon,
+  WhatsappShareButton,
+  WhatsappIcon,
+  FacebookShareButton,
+  FacebookIcon,
+  FacebookMessengerShareButton,
+  FacebookMessengerIcon,
+} from "react-share";
 
 type Props = {
   url: string;
@@ -33,30 +45,30 @@ export function ShareSection({ url, title }: Props) {
   };
 
   return (
-    <div className="w-full rounded-2xl space-y-3">
-      <h3 className="text-sm font-bold text-center">Deel dit gesprek</h3>
-      <div className="flex flex-wrap justify-center gap-2">
-        <Button asChild variant="outline" size="sm">
-          <a
-            href={shareUrls.twitter}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <ShareIcon className="size-4 mr-2" />
-            Deel op X
-          </a>
-        </Button>
+    <div className="w-full rounded-2xl space-y-6 bg-background/20 backdrop-blur-2xl p-4 text-background">
+      <div>
+        <h3 className="text-lg font-bold text-center">Deel dit formatiegesprek</h3>
+        <p className="text-sm text-center text-background/80">
+          Laat zien dat politieke partijen wél tot een compromis kunnen komen.{" "}
+        </p>
+      </div>
+      <div className="flex flex-wrap justify-center gap-2 text-foreground">
+        <WhatsappShareButton url={url} title={title}>
+          <WhatsappIcon className="size-8 rounded-md" />
+        </WhatsappShareButton>
 
-        <Button asChild variant="outline" size="sm">
-          <a
-            href={shareUrls.linkedin}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <ShareIcon className="size-4 mr-2" />
-            Deel op LinkedIn
-          </a>
-        </Button>
+        <TwitterShareButton url={url} title={title}>
+          <TwitterIcon className="size-8 rounded-md" />
+        </TwitterShareButton>
+
+        <LinkedinShareButton url={url} title={title}>
+          <LinkedinIcon className="size-8 rounded-md" />
+        </LinkedinShareButton>
+
+        <FacebookShareButton url={url} title={title}>
+          {" "}
+          <FacebookIcon className="size-8 rounded-md" />{" "}
+        </FacebookShareButton>
 
         <Button variant="outline" size="sm" onClick={handleCopy}>
           <CopyIcon className="size-4 mr-2" />
@@ -66,4 +78,3 @@ export function ShareSection({ url, title }: Props) {
     </div>
   );
 }
-
