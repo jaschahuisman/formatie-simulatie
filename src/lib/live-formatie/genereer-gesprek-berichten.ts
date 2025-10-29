@@ -1,6 +1,6 @@
 import { GESPREK_TARGET_MESSAGES_COUNT, GESPREK_TURNS_PER_BATCH } from "@/config";
 import { Deelnemer } from "@/data/deelnemers";
-import { model } from "@/lib/ai";
+import { getRandomModelConfig } from "@/lib/ai";
 import { generateObject } from "ai";
 import { z } from "zod";
 import { addTimestampsToMessages } from "../utils";
@@ -306,12 +306,18 @@ WIE zou logisch reageren op de LAATSTE BERICHTEN hierboven? Overweeg:
 - Niet iedereen hoeft te spreken - focus op natuurlijke reacties.`;
 
     try {
+      // Selecteer random model configuratie voor variatie
+      const modelConfig = getRandomModelConfig();
+      
       logger.debug(`Calling AI with schema`, {
-        schemaStructure: "Array of turns, each turn has deelnemerName and messages array"
+        schemaStructure: "Array of turns, each turn has deelnemerName and messages array",
+        modelConfig: modelConfig.name,
+        temperature: modelConfig.settings.temperature,
       });
 
       const response = await generateObject({
-        model,
+        model: modelConfig.model,
+        ...modelConfig.settings,
         schema: buildMessageSchema(opties.deelnemers),
         schemaName: "PolitiekeGespreksBeurten",
         schemaDescription: "Array van EXACT 2 of 3 politieke gespreksbeurten. Elke beurt bevat de naam van een politicus en hun 1-3 korte berichten. ABSOLUUT MAXIMUM: 3 beurten. Niet 4, niet 5, maximaal 3.",
@@ -324,6 +330,7 @@ WIE zou logisch reageren op de LAATSTE BERICHTEN hierboven? Overweeg:
           logger.debug(`AI raw response (onFinish)`, {
             text: finishResponse.text,
             finishReason: finishResponse.finishReason,
+            modelUsed: modelConfig.name,
           });
         },
       });
