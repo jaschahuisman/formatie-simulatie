@@ -1,4 +1,7 @@
-import { GESPREK_TARGET_MESSAGES_COUNT, GESPREK_TURNS_PER_BATCH } from "@/config";
+import {
+  GESPREK_TARGET_MESSAGES_COUNT,
+  GESPREK_TURNS_PER_BATCH,
+} from "@/config";
 import { Deelnemer } from "@/data/deelnemers";
 import { getRandomModelConfig } from "@/lib/ai";
 import { generateObject } from "ai";
@@ -26,7 +29,7 @@ type AIGeneratedMessage = {
  */
 export function buildMessageSchema(deelnemers: Deelnemer[]) {
   const deelnemerNames = deelnemers.map((d) => d.name);
-  
+
   const MIN_TURNS = 2;
   const MAX_TURNS = 10; // Ruime limiet voor schema, we truncaten naar 3 in code
   const MIN_MESSAGES_PER_TURN = 1;
@@ -34,22 +37,24 @@ export function buildMessageSchema(deelnemers: Deelnemer[]) {
 
   return z
     .array(
-      z.object({
-        deelnemerName: z
-          .enum(deelnemerNames as [string, ...string[]])
-          .describe(
-            `De naam van de politicus die deze berichten verstuurt. Moet een van de volgende zijn: ${deelnemerNames.join(
-              ", "
-            )}`
-          ),
-        messages: z
-          .array(z.string())
-          .min(MIN_MESSAGES_PER_TURN)
-          .max(MAX_MESSAGES_PER_TURN)
-          .describe(
-            `Array van ${MIN_MESSAGES_PER_TURN} tot ${MAX_MESSAGES_PER_TURN} korte chat-berichten van deze politicus. MEESTAL 1 bericht, SOMS 2 berichten, ZELDEN 3 berichten. Minder is meer! Elk bericht is zeer kort (1 zin of minder).`
-          ),
-      }).describe("Een enkele beurt: één politicus die 1-3 berichten stuurt")
+      z
+        .object({
+          deelnemerName: z
+            .enum(deelnemerNames as [string, ...string[]])
+            .describe(
+              `De naam van de politicus die deze berichten verstuurt. Moet een van de volgende zijn: ${deelnemerNames.join(
+                ", "
+              )}`
+            ),
+          messages: z
+            .array(z.string())
+            .min(MIN_MESSAGES_PER_TURN)
+            .max(MAX_MESSAGES_PER_TURN)
+            .describe(
+              `Array van ${MIN_MESSAGES_PER_TURN} tot ${MAX_MESSAGES_PER_TURN} korte chat-berichten van deze politicus. MEESTAL 1 bericht, SOMS 2 berichten, ZELDEN 3 berichten. Minder is meer! Elk bericht is zeer kort (1 zin of minder).`
+            ),
+        })
+        .describe("Een enkele beurt: één politicus die 1-3 berichten stuurt")
     )
     .min(MIN_TURNS)
     .max(MAX_TURNS)
@@ -75,10 +80,10 @@ export function addDeelnemerIdsToAIGeneratedMessages(
 
   // Flatten bursts into individual messages
   const flattenedMessages: GeneratedMessage[] = [];
-  
+
   for (const burst of bursts) {
     const deelnemerId = deelnemerNameToId[burst.deelnemerName];
-    
+
     for (const message of burst.messages) {
       flattenedMessages.push({
         message,
@@ -104,10 +109,13 @@ const buildSystemMessage = (opties: {
   const sortedDeelnemers = [...opties.deelnemers].sort(
     (a, b) => b.partij.zetels - a.partij.zetels
   );
-  
-  const totalZetels = sortedDeelnemers.reduce((sum, d) => sum + d.partij.zetels, 0);
+
+  const totalZetels = sortedDeelnemers.reduce(
+    (sum, d) => sum + d.partij.zetels,
+    0
+  );
   const majorityNeeded = 76; // Meerderheid in Tweede Kamer
-  
+
   return `
     # Rol
     Je bent een expert in het schrijven van realistische Nederlandse politieke onderhandelingen. 
@@ -127,8 +135,11 @@ const buildSystemMessage = (opties: {
             ? `\n      - Achtergrond: ${deelnemer.persoonlijkeDetails}`
             : ""
         }${
-          deelnemer.typischeUitspraken && deelnemer.typischeUitspraken.length > 0
-            ? `\n      - Typische uitspraken: ${deelnemer.typischeUitspraken.join("; ")}`
+          deelnemer.typischeUitspraken &&
+          deelnemer.typischeUitspraken.length > 0
+            ? `\n      - Typische uitspraken: ${deelnemer.typischeUitspraken.join(
+                "; "
+              )}`
             : ""
         }
       - Standpunten:
@@ -142,8 +153,14 @@ const buildSystemMessage = (opties: {
     # Zetelverdeling & Machtsbalans
     - Totaal zetels aan tafel: ${totalZetels}
     - Meerderheid nodig: ${majorityNeeded} zetels
-    - Grootste partij: ${sortedDeelnemers[0].partij.name} (${sortedDeelnemers[0].name}, ${sortedDeelnemers[0].partij.zetels} zetels)
-    - Kleinste partij: ${sortedDeelnemers[sortedDeelnemers.length - 1].partij.name} (${sortedDeelnemers[sortedDeelnemers.length - 1].name}, ${sortedDeelnemers[sortedDeelnemers.length - 1].partij.zetels} zetels)
+    - Grootste partij: ${sortedDeelnemers[0].partij.name} (${
+    sortedDeelnemers[0].name
+  }, ${sortedDeelnemers[0].partij.zetels} zetels)
+    - Kleinste partij: ${
+      sortedDeelnemers[sortedDeelnemers.length - 1].partij.name
+    } (${sortedDeelnemers[sortedDeelnemers.length - 1].name}, ${
+    sortedDeelnemers[sortedDeelnemers.length - 1].partij.zetels
+  } zetels)
     
     ## Strategisch gebruik van zetels in het gesprek
     Politici kunnen en MOETEN hun zetels strategisch inzetten in hun argumentatie:
@@ -237,7 +254,7 @@ export async function genereerGesprekBerichten(opties: {
 
     const remainingMessages =
       GESPREK_TARGET_MESSAGES_COUNT - generatedMessages.length;
-    
+
     const isLastBatch = remainingMessages <= 10; // Als we dichtbij het einde zijn
 
     logger.debug(
@@ -266,8 +283,13 @@ export async function genereerGesprekBerichten(opties: {
 
     // Laatste 5 berichten - ENIGE BASIS voor reacties
     const recentMessages = generatedMessages.slice(-5);
-    const lastSpeakerContext = recentMessages.length > 0
-      ? `\n## ⚠️ LAATSTE BERICHTEN - DIT IS ALLES WAT JE HEBT:\n${recentMessages.map((m, i) => `[${i + 1}] ${m.deelnemerName}: "${m.message}"`).join('\n')}\n\n🚨 KRITIEKE REGEL: Reageer UITSLUITEND op wat HIERBOVEN staat. NIETS anders.
+    const lastSpeakerContext =
+      recentMessages.length > 0
+        ? `\n## ⚠️ LAATSTE BERICHTEN - DIT IS ALLES WAT JE HEBT:\n${recentMessages
+            .map((m, i) => `[${i + 1}] ${m.deelnemerName}: "${m.message}"`)
+            .join(
+              "\n"
+            )}\n\n🚨 KRITIEKE REGEL: Reageer UITSLUITEND op wat HIERBOVEN staat. NIETS anders.
 
 📋 VERPLICHTE CHECKLIST voor ELKE reactie:
 1. Als je iemand bij naam noemt ("Dilan, ..." of "Dat klopt niet, Frans"), CHECK:
@@ -290,29 +312,35 @@ export async function genereerGesprekBerichten(opties: {
    Bericht [3]: Dilan: "De economie moet groeien"
    GOED reactie: "Dilan, economische groei is belangrijk, maar..."
 `
-      : '';
-    
+        : "";
+
     // Track wie er al gesproken heeft en hoe vaak
     const speakerCounts = new Map<string, number>();
-    generatedMessages.forEach(m => {
-      speakerCounts.set(m.deelnemerName, (speakerCounts.get(m.deelnemerName) || 0) + 1);
+    generatedMessages.forEach((m) => {
+      speakerCounts.set(
+        m.deelnemerName,
+        (speakerCounts.get(m.deelnemerName) || 0) + 1
+      );
     });
-    
+
     // Sorteer politici: wie heeft het minst gesproken?
     const deelnemersBySpeechCount = opties.deelnemers
-      .map(d => ({
+      .map((d) => ({
         name: d.name,
-        count: speakerCounts.get(d.name) || 0
+        count: speakerCounts.get(d.name) || 0,
       }))
       .sort((a, b) => a.count - b.count);
-    
+
     const leastActiveDeelnemers = deelnemersBySpeechCount
-      .filter(d => d.count < 3)
-      .map(d => d.name);
-    
-    const speakerDistributionContext = leastActiveDeelnemers.length > 0
-      ? `\n## BELANGRIJK - Sprekersverdeling:\nDeze politici hebben nog weinig of niet gesproken en zouden nu aan bod moeten komen: ${leastActiveDeelnemers.join(', ')}\nVarieer de sprekers! Niet altijd dezelfde mensen laten reageren.\n`
-      : '\n## BELANGRIJK - Sprekersverdeling:\nVarieer de sprekers! Laat ook andere politici aan het woord komen, niet alleen degenen die al veel gezegd hebben.\n';
+      .filter((d) => d.count < 3)
+      .map((d) => d.name);
+
+    const speakerDistributionContext =
+      leastActiveDeelnemers.length > 0
+        ? `\n## BELANGRIJK - Sprekersverdeling:\nDeze politici hebben nog weinig of niet gesproken en zouden nu aan bod moeten komen: ${leastActiveDeelnemers.join(
+            ", "
+          )}\nVarieer de sprekers! Niet altijd dezelfde mensen laten reageren.\n`
+        : "\n## BELANGRIJK - Sprekersverdeling:\nVarieer de sprekers! Laat ook andere politici aan het woord komen, niet alleen degenen die al veel gezegd hebben.\n";
 
     const userPrompt = isLastBatch
       ? `${conversationSummaryContext}${lastSpeakerContext}${speakerDistributionContext}
@@ -360,9 +388,10 @@ WIE zou logisch reageren op de LAATSTE BERICHTEN hierboven? Overweeg:
     try {
       // Selecteer random model configuratie voor variatie
       const modelConfig = getRandomModelConfig();
-      
+
       logger.debug(`Calling AI with schema`, {
-        schemaStructure: "Array of turns, each turn has deelnemerName and messages array",
+        schemaStructure:
+          "Array of turns, each turn has deelnemerName and messages array",
         modelConfig: modelConfig.name,
         temperature: modelConfig.settings.temperature,
       });
@@ -372,12 +401,14 @@ WIE zou logisch reageren op de LAATSTE BERICHTEN hierboven? Overweeg:
         ...modelConfig.settings,
         schema: buildMessageSchema(opties.deelnemers),
         schemaName: "PolitiekeGespreksBeurten",
-        schemaDescription: "Array van EXACT 2 of 3 politieke gespreksbeurten. Elke beurt bevat de naam van een politicus en hun 1-3 korte berichten. ABSOLUUT MAXIMUM: 3 beurten. Niet 4, niet 5, maximaal 3.",
+        schemaDescription:
+          "Array van EXACT 2 of 3 politieke gespreksbeurten. Elke beurt bevat de naam van een politicus en hun 1-3 korte berichten. ABSOLUUT MAXIMUM: 3 beurten. Niet 4, niet 5, maximaal 3.",
         mode: "json",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
         ],
+        // @ts-expect-error - onFinish is not a valid property
         onFinish: ({ response: finishResponse }) => {
           logger.debug(`AI raw response (onFinish)`, {
             text: finishResponse.text,
@@ -387,22 +418,26 @@ WIE zou logisch reageren op de LAATSTE BERICHTEN hierboven? Overweeg:
         },
       });
 
-      logger.debug(`AI response received successfully`, { 
+      logger.debug(`AI response received successfully`, {
         turnsGenerated: response.object.length,
-        rawResponse: JSON.stringify(response.object, null, 2)
+        rawResponse: JSON.stringify(response.object, null, 2),
       });
 
       // Truncate naar max 3 turns - AI genereert vaak 4-5 turns ondanks instructies
       const MAX_TURNS_TO_USE = 3;
-      const aiMessages = response.object.length > MAX_TURNS_TO_USE
-        ? response.object.slice(0, MAX_TURNS_TO_USE)
-        : response.object;
-      
+      const aiMessages =
+        response.object.length > MAX_TURNS_TO_USE
+          ? response.object.slice(0, MAX_TURNS_TO_USE)
+          : response.object;
+
       if (response.object.length > MAX_TURNS_TO_USE) {
-        logger.info(`AI generated ${response.object.length} turns, using first ${MAX_TURNS_TO_USE}`, {
-          generated: response.object.length,
-          used: aiMessages.length
-        });
+        logger.info(
+          `AI generated ${response.object.length} turns, using first ${MAX_TURNS_TO_USE}`,
+          {
+            generated: response.object.length,
+            used: aiMessages.length,
+          }
+        );
       }
 
       const newMessages = addDeelnemerIdsToAIGeneratedMessages(
@@ -411,10 +446,9 @@ WIE zou logisch reageren op de LAATSTE BERICHTEN hierboven? Overweeg:
       );
 
       if (newMessages.length === 0) {
-        logger.warn(
-          `No messages generated for batch ${batchCount}`,
-          { batchCount }
-        );
+        logger.warn(`No messages generated for batch ${batchCount}`, {
+          batchCount,
+        });
         break;
       }
 
@@ -430,18 +464,24 @@ WIE zou logisch reageren op de LAATSTE BERICHTEN hierboven? Overweeg:
       }
     } catch (error) {
       // Log detailed error information including any raw response
-      const errorDetails: any = {
-        errorName: error instanceof Error ? error.name : 'Unknown',
+      const errorDetails: {
+        errorName: string;
+        errorMessage: string;
+        rawResponse?: unknown;
+        rawText?: unknown;
+        cause?: unknown;
+      } = {
+        errorName: error instanceof Error ? error.name : "Unknown",
         errorMessage: error instanceof Error ? error.message : String(error),
       };
 
       // Try to extract raw response from AI SDK error
-      if (error && typeof error === 'object') {
-        // @ts-ignore - AI SDK errors may have these properties
+      if (error && typeof error === "object") {
+        // @ts-expect-error - AI SDK errors may have these properties
         if (error.response) errorDetails.rawResponse = error.response;
-        // @ts-ignore
+        // @ts-expect-error - AI SDK errors may have these properties
         if (error.text) errorDetails.rawText = error.text;
-        // @ts-ignore
+        // @ts-expect-error - AI SDK errors may have these properties
         if (error.cause) errorDetails.cause = error.cause;
       }
 
@@ -457,9 +497,9 @@ WIE zou logisch reageren op de LAATSTE BERICHTEN hierboven? Overweeg:
     }
   }
 
-  logger.info("Gesprek berichten generation completed", { 
+  logger.info("Gesprek berichten generation completed", {
     totalMessages: generatedMessages.length,
-    targetMessages: GESPREK_TARGET_MESSAGES_COUNT 
+    targetMessages: GESPREK_TARGET_MESSAGES_COUNT,
   });
 
   return addTimestampsToMessages(

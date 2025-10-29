@@ -6,7 +6,7 @@ import {
   DEVICE_ID_COOKIE_MAX_AGE,
 } from "@/lib/device";
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const response = NextResponse.next();
 
   // Check if device ID cookie exists

@@ -7,17 +7,25 @@ import {
 } from "@/repository";
 import { genereerGesprekBerichten } from "@/lib/live-formatie/genereer-gesprek-berichten";
 import { genereerCompromis } from "@/lib/live-formatie/genereer-compromis";
-import { checkContentSafety, genereerTitel } from "@/lib/live-formatie/genereer-titel";
+import {
+  checkContentSafety,
+  genereerTitel,
+} from "@/lib/live-formatie/genereer-titel";
 import { GESPREK_DURATION_MINUTES, MIN_DEELNEMERS_FOR_GESPREK } from "@/config";
-import { getDeviceId } from "@/lib/device";
+import { cookies } from "next/headers";
+import { DEVICE_ID_COOKIE_NAME } from "@/lib/device";
 
 const logger = createLogger("api/gesprekken");
 
 export async function POST(request: NextRequest) {
-  const encoder = new TextEncoder();
+  const cookieStore = await cookies();
+  const deviceId = cookieStore.get(DEVICE_ID_COOKIE_NAME)?.value;
 
-  // Get device ID (middleware will have already ensured it exists)
-  const deviceId = await getDeviceId();
+  if (!deviceId) {
+    return new Response("Device ID not found", { status: 400 });
+  }
+
+  const encoder = new TextEncoder();
 
   // Create a TransformStream to send SSE
   const stream = new TransformStream();
@@ -72,7 +80,8 @@ export async function POST(request: NextRequest) {
       if (!safetyCheck.safe) {
         await sendEvent({
           type: "error",
-          message: "Dit onderwerp wordt niet ondersteund. Kies een ander onderwerp voor het formatiegesprek.",
+          message:
+            "Dit onderwerp wordt niet ondersteund. Kies een ander onderwerp voor het formatiegesprek.",
         });
         await writer.close();
         return;
@@ -215,7 +224,3 @@ export async function POST(request: NextRequest) {
     },
   });
 }
-
-
-
-
