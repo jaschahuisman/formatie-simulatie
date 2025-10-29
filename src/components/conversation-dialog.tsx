@@ -24,6 +24,7 @@ import {
   MessageCirclePlusIcon,
 } from "lucide-react";
 import Image from "next/image";
+import { FunFactCard } from "@/components/fun-fact-card";
 
 type Props = {
   deelnemers: Deelnemer[];
@@ -326,18 +327,24 @@ export function ConversationDialog({ deelnemers }: Props) {
               </div>
 
               {isGenerating && (
-                <div className="space-y-2 mt-4">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">
-                      {progress.message}
-                    </span>
-                    <span className="font-medium">{progress.percentage}%</span>
-                  </div>
-                  <div className="w-full bg-border rounded-full h-2 overflow-hidden">
-                    <div
-                      className="bg-primary h-full transition-all duration-300"
-                      style={{ width: `${progress.percentage}%` }}
-                    />
+                <div className="space-y-6 mt-4 py-6">
+                  <FunFactCard />
+
+                  <div className="space-y-2 w-full max-w-2xl mx-auto">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">
+                        {progress.message}
+                      </span>
+                      <span className="font-medium">
+                        {progress.percentage}%
+                      </span>
+                    </div>
+                    <div className="w-full bg-border rounded-full h-2 overflow-hidden">
+                      <div
+                        className="bg-primary h-full transition-all duration-300"
+                        style={{ width: `${progress.percentage}%` }}
+                      />
+                    </div>
                   </div>
                 </div>
               )}

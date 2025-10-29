@@ -1,15 +1,11 @@
 import { db } from "@/lib/db";
-import { desc, eq } from "drizzle-orm";
-import {
-  gesprekkenTable,
-  berichtenTable,
-} from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
+import { gesprekkenTable, berichtenTable } from "@/lib/db/schema";
 import { deelnemers } from "@/data/deelnemers";
 import { GeneratedMessage } from "@/lib/live-formatie/genereer-gesprek-berichten";
 import { createLogger } from "@/lib/logger";
 
 const logger = createLogger("repository");
-
 
 /**
  * Maak een nieuw gesprek aan.
@@ -58,7 +54,10 @@ export async function addBerichtenToGesprek(
   berichten: (GeneratedMessage & { timestamp: Date })[]
 ) {
   try {
-    logger.debug("Adding berichten to gesprek", { gesprekId, berichtenCount: berichten.length });
+    logger.debug("Adding berichten to gesprek", {
+      gesprekId,
+      berichtenCount: berichten.length,
+    });
     const toegevoegdeBerichten = await db.transaction(async (tx) => {
       return await tx
         .insert(berichtenTable)
@@ -73,7 +72,10 @@ export async function addBerichtenToGesprek(
         .returning();
     });
 
-    logger.info("Berichten added successfully", { gesprekId, count: toegevoegdeBerichten.length });
+    logger.info("Berichten added successfully", {
+      gesprekId,
+      count: toegevoegdeBerichten.length,
+    });
     return toegevoegdeBerichten;
   } catch (error) {
     logger.error("Error adding berichten to gesprek", error);
