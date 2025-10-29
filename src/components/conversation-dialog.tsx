@@ -304,7 +304,11 @@ export function ConversationDialog({ deelnemers }: Props) {
                   disabled={isGenerating}
                   className="w-full"
                   autoFocus
+                  maxLength={100}
                 />
+                <p className="text-xs text-muted-foreground">
+                  {onderwerp.length}/100 karakters
+                </p>
               </div>
 
               <div className="flex flex-wrap gap-2">
