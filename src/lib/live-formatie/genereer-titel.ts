@@ -1,8 +1,9 @@
 import { generateText } from "ai";
 import { model } from "@/lib/ai";
-import { logger } from "@/lib/logger";
+import { createLogger } from "@/lib/logger";
 
 const MAX_ONDERWERP_LENGTH = 100;
+const logger = createLogger("genereer-titel");
 
 /**
  * Check of de input veilig en geschikt is voor een politiek gesprek
