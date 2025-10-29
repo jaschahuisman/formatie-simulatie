@@ -15,8 +15,8 @@ export type GeneratedMessage = {
 };
 
 type AIGeneratedMessage = {
-  message: string;
   deelnemerName: string;
+  messages: string[]; // 1-3 berichten per burst
 };
 
 /**
@@ -29,36 +29,55 @@ export function buildMessageSchema(deelnemers: Deelnemer[]) {
 
   return z.array(
     z.object({
-      message: z.string().describe("Het bericht van de politicus"),
       deelnemerName: z
         .enum(deelnemerNames as [string, ...string[]])
         .describe(
-          `De naam van de politicus die dit bericht verstuurt. Moet een van de volgende zijn: ${deelnemerNames.join(
+          `De naam van de politicus die deze berichten verstuurt. Moet een van de volgende zijn: ${deelnemerNames.join(
             ", "
           )}`
+        ),
+      messages: z
+        .array(z.string())
+        .min(1)
+        .max(3)
+        .describe(
+          "1-3 korte chat-berichten die deze politicus in één burst stuurt. Elk bericht is zeer kort (1 zin of minder)."
         ),
     })
   );
 }
 
 /**
- * Add the deelnemer IDs to the AI generated messages.
- * @param messages - The generated messages.
+ * Flatten AI generated message bursts into individual messages and add deelnemer IDs.
+ * Each burst (1-3 messages from one politicus) becomes multiple individual GeneratedMessage objects.
+ * @param bursts - The generated message bursts from the AI.
  * @param deelnemers - The deelnemers of the conversation.
- * @returns The generated messages with the deelnemer IDs.
+ * @returns Flattened array of individual messages with deelnemer IDs.
  */
 export function addDeelnemerIdsToAIGeneratedMessages(
-  messages: AIGeneratedMessage[],
+  bursts: AIGeneratedMessage[],
   deelnemers: Deelnemer[]
 ): GeneratedMessage[] {
   const deelnemerNameToId = Object.fromEntries(
     deelnemers.map((d) => [d.name, d.id])
   );
 
-  return messages.map((msg) => ({
-    ...msg,
-    deelnemerId: deelnemerNameToId[msg.deelnemerName],
-  }));
+  // Flatten bursts into individual messages
+  const flattenedMessages: GeneratedMessage[] = [];
+  
+  for (const burst of bursts) {
+    const deelnemerId = deelnemerNameToId[burst.deelnemerName];
+    
+    for (const message of burst.messages) {
+      flattenedMessages.push({
+        message,
+        deelnemerName: burst.deelnemerName,
+        deelnemerId,
+      });
+    }
+  }
+
+  return flattenedMessages;
 }
 
 /**
@@ -85,11 +104,19 @@ const buildSystemMessage = (opties: {
     - ${deelnemer.name}
       - Partij: ${deelnemer.partij.name}
       - Zetels: ${deelnemer.partij.zetels}
-      - Tone of voice: ${deelnemer.toneOfVoice}
+      - Tone of voice: ${deelnemer.toneOfVoice}${
+          deelnemer.persoonlijkeDetails
+            ? `\n      - Achtergrond: ${deelnemer.persoonlijkeDetails}`
+            : ""
+        }${
+          deelnemer.typischeUitspraken && deelnemer.typischeUitspraken.length > 0
+            ? `\n      - Typische uitspraken: ${deelnemer.typischeUitspraken.join("; ")}`
+            : ""
+        }
       - Standpunten:
           ${deelnemer.partij.programma.standpunten
             .map((standpunt) => `- ${standpunt}`)
-            .join("\n\n")}
+            .join("\n          ")}
     `
       )
       .join("\n")}
@@ -105,9 +132,23 @@ const buildSystemMessage = (opties: {
     - Het gesprek moet een verhaalboog hebben: begin (standpunten), midden (discussie), einde (toenadering)
     - Het gesprek moet eindigen met ruimte voor een compromis of concrete stappen richting oplossing
     - Blijf realistisch: politici blijven hun kernwaarden verdedigen maar zijn bereid te onderhandelen
-    - Berichten moeten KORT en PUNTIG zijn (1-3 zinnen max)
-    - Politici mogen 2 berichten achter elkaar sturen als ze iets willen verduidelijken
-    - Zorg dat politici REAGEREN op wat er net gezegd is. Het is een échte discussie.
+    
+    # Chat-stijl Format
+    - Dit is een GROEPSCHAT. Politici sturen korte, snelle berichten zoals in WhatsApp
+    - Elk persoon stuurt 1-3 berichten per beurt (een "burst")
+    - Berichten zijn ZEER KORT:
+      * Meestal 1 korte zin
+      * Soms halve zinnen of uitroepen: "Precies!", "Dat slaat nergens op.", "Kom op zeg."
+      * Maximum 15-20 woorden per bericht
+    - Emojis zijn toegestaan en moeten spaarzaam gebruikt worden:
+      * Vooral door jongere/informelere politici (Rob Jetten, Laurens Dassen)
+      * Voorbeelden: 🔥 💪 🤔 ✅ ❌ 👍 😅 🎯
+      * Oudere/formelere politici gebruiken zelden of nooit emojis
+    - Bursts kunnen zijn:
+      * Eén gedachte opgebroken in delen: ["Dat vind ik te kort door de bocht.", "We moeten dit serieus uitwerken."]
+      * Snelle reacties achter elkaar: ["Precies! 👍", "Daar ben ik het volledig mee eens."]
+      * Opbouwen naar een punt: ["Even eerlijk zijn.", "Dit gaat nergens over.", "We hebben een beter plan nodig."]
+    - REAGEER op wat er net gezegd is. Dit is een échte, dynamische discussie.
     - Gebruik de partijstandpunten en tone of voice van elke politicus
     - Houd het constructief maar wel met realistische spanning en meningsverschillen
     `;
