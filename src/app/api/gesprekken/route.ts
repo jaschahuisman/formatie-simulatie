@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
       if (!safetyCheck.safe) {
         await sendEvent({
           type: "error",
-          message: `Oepsie! Deze content is niet toegestaan. ${safetyCheck.reason || "Probeer een ander onderwerp."}`,
+          message: "Dit onderwerp wordt niet ondersteund. Kies een ander onderwerp voor het formatiegesprek.",
         });
         await writer.close();
         return;
