@@ -1,4 +1,4 @@
-import { GESPREK_TARGET_MESSAGES_COUNT, GESPREK_CHUNK_SIZE } from "@/config";
+import { GESPREK_TARGET_MESSAGES_COUNT, GESPREK_TURNS_PER_BATCH } from "@/config";
 import { Deelnemer } from "@/data/deelnemers";
 import { model } from "@/lib/ai";
 import { generateObject } from "ai";
@@ -27,24 +27,30 @@ type AIGeneratedMessage = {
 export function buildMessageSchema(deelnemers: Deelnemer[]) {
   const deelnemerNames = deelnemers.map((d) => d.name);
 
-  return z.array(
-    z.object({
-      deelnemerName: z
-        .enum(deelnemerNames as [string, ...string[]])
-        .describe(
-          `De naam van de politicus die deze berichten verstuurt. Moet een van de volgende zijn: ${deelnemerNames.join(
-            ", "
-          )}`
-        ),
-      messages: z
-        .array(z.string())
-        .min(1)
-        .max(3)
-        .describe(
-          "1-3 korte chat-berichten die deze politicus in één burst stuurt. Elk bericht is zeer kort (1 zin of minder)."
-        ),
-    })
-  );
+  return z
+    .array(
+      z.object({
+        deelnemerName: z
+          .enum(deelnemerNames as [string, ...string[]])
+          .describe(
+            `De naam van de politicus die deze berichten verstuurt. Moet een van de volgende zijn: ${deelnemerNames.join(
+              ", "
+            )}`
+          ),
+        messages: z
+          .array(z.string())
+          .min(1)
+          .max(3)
+          .describe(
+            "1-3 korte chat-berichten die deze politicus in één burst stuurt. Elk bericht is zeer kort (1 zin of minder)."
+          ),
+      })
+    )
+    .min(2)
+    .max(3)
+    .describe(
+      "2-3 turns van politici die reageren. Elke turn is een politicus die 1-3 korte berichten stuurt."
+    );
 }
 
 /**
@@ -172,18 +178,15 @@ export async function genereerGesprekBerichten(opties: {
   const systemPrompt = buildSystemMessage(opties);
 
   let phase: "begin" | "midden" | "einde" = "begin";
-  let chunkCount = 0;
-  const maxChunks = Math.ceil(
-    GESPREK_TARGET_MESSAGES_COUNT / GESPREK_CHUNK_SIZE
-  );
+  let batchCount = 0;
 
   logger.info(
-    `Generating ${GESPREK_TARGET_MESSAGES_COUNT} messages in ~${maxChunks} batches of ~${GESPREK_CHUNK_SIZE} messages (kleinere batches voor natuurlijker gesprek)`,
+    `Generating ~${GESPREK_TARGET_MESSAGES_COUNT} messages in batches of ${GESPREK_TURNS_PER_BATCH} turns (kleinere batches voor natuurlijker gesprek)`,
     { phase }
   );
 
   while (generatedMessages.length < GESPREK_TARGET_MESSAGES_COUNT) {
-    chunkCount++;
+    batchCount++;
 
     const progress = generatedMessages.length / GESPREK_TARGET_MESSAGES_COUNT;
 
@@ -195,19 +198,14 @@ export async function genereerGesprekBerichten(opties: {
       phase = "einde";
     }
 
-    const isLastChunk =
-      chunkCount === maxChunks ||
-      generatedMessages.length >=
-        GESPREK_TARGET_MESSAGES_COUNT - GESPREK_CHUNK_SIZE;
-
     const remainingMessages =
       GESPREK_TARGET_MESSAGES_COUNT - generatedMessages.length;
-
-    const messagesThisChunk = Math.min(GESPREK_CHUNK_SIZE, remainingMessages);
+    
+    const isLastBatch = remainingMessages <= 10; // Als we dichtbij het einde zijn
 
     logger.debug(
-      `Generating batch ${chunkCount}/${maxChunks} with ${messagesThisChunk} messages (3-4 turns)`,
-      { phase }
+      `Generating batch ${batchCount} with ${GESPREK_TURNS_PER_BATCH} turns (${remainingMessages} messages remaining)`,
+      { phase, remainingMessages }
     );
 
     const conversationHistoryContext =
@@ -238,13 +236,13 @@ export async function genereerGesprekBerichten(opties: {
       ? `\n## Laatste berichten (reageer hierop):\n${lastSpeakers.map(s => `${s.name}: ${s.message}`).join('\n')}\n`
       : '';
 
-    const userPrompt = isLastChunk
+    const userPrompt = isLastBatch
       ? `${conversationHistoryContext}${lastSpeakerContext}
 
 ## Fase: ${phase.toUpperCase()} 
 ${phaseInstructions[phase]}
 
-DIT IS HET LAATSTE STUK. Genereer ${messagesThisChunk} berichten die het gesprek AFSLUITEN.
+DIT IS HET LAATSTE STUK. Genereer ${GESPREK_TURNS_PER_BATCH}-3 turns (politici die reageren) om het gesprek af te ronden.
 Het gesprek moet eindigen met toenadering en perspectief op een compromis of oplossing. 
 Laat politici concrete vervolgstappen noemen of ruimte laten voor een gezamenlijke aanpak.
 
@@ -257,7 +255,8 @@ WIE zou logisch reageren op de laatste sprekers? Denk na over:
 ## Fase: ${phase.toUpperCase()}
 ${phaseInstructions[phase]}
 
-Genereer de volgende ${messagesThisChunk} berichten (dit zijn ${messagesThisChunk} INDIVIDUELE berichten, dus 3-4 politici die elk 1-3 berichten sturen).
+Genereer ${GESPREK_TURNS_PER_BATCH}-3 turns (politici die reageren).
+Elke politicus stuurt 1-3 korte berichten per beurt.
 
 WIE zou logisch reageren op wat er net gezegd is? Denk na over:
 - Wie wordt direct getriggerd door de laatste spreker?
@@ -283,24 +282,25 @@ WIE zou logisch reageren op wat er net gezegd is? Denk na over:
 
       if (newMessages.length === 0) {
         logger.warn(
-          `No messages generated for chunk ${chunkCount}`,
-          { chunkCount }
+          `No messages generated for batch ${batchCount}`,
+          { batchCount }
         );
         break;
       }
 
       generatedMessages.push(...newMessages);
       logger.debug(
-        `Generated ${newMessages.length} messages for chunk ${chunkCount}`,
-        { chunkCount, totalMessages: generatedMessages.length }
+        `Generated ${newMessages.length} messages for batch ${batchCount} (total: ${generatedMessages.length}/${GESPREK_TARGET_MESSAGES_COUNT})`,
+        { batchCount, totalMessages: generatedMessages.length }
       );
 
       if (generatedMessages.length >= GESPREK_TARGET_MESSAGES_COUNT) {
+        logger.info(`Target message count reached, stopping generation`);
         break;
       }
     } catch (error) {
       logger.error(
-        `Error generating messages for chunk ${chunkCount}`,
+        `Error generating messages for batch ${batchCount}`,
         error
       );
       if (generatedMessages.length === 0) {
