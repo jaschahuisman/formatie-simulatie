@@ -1,65 +1,181 @@
+import { Container, Page } from "@/components/layout";
+import { ConversationDialog } from "@/components/conversation-dialog";
+import { Ornament } from "@/components/ornament";
+import { deelnemers } from "@/data/deelnemers";
 import Image from "next/image";
 
-export default function Home() {
+export default async function Home() {
+  const topDeelnemers = deelnemers.slice(0, 5);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <Page className="items-center justify-center">
+      {/* Decorative Ornaments */}
+      <Ornament
+        type="star"
+        color="#5ED18F"
+        initialX={10}
+        initialY={15}
+        size={20}
+        floatSpeed={0.4}
+      />
+      <Ornament
+        type="dot"
+        color="#E97A3B"
+        initialX={85}
+        initialY={20}
+        size={15}
+        floatSpeed={0.6}
+      />
+      <Ornament
+        type="wiggle"
+        color="#6ECBE2"
+        initialX={15}
+        initialY={70}
+        size={20}
+        floatSpeed={0.5}
+      />
+      <Ornament
+        type="turd"
+        color="#F88195"
+        initialX={90}
+        initialY={75}
+        size={20}
+        floatSpeed={0.55}
+      />
+      <Ornament
+        type="star"
+        color="#38418B"
+        initialX={50}
+        initialY={10}
+        size={20}
+        floatSpeed={0.7}
+      />
+      <Ornament
+        type="dot"
+        color="#5ED18F"
+        initialX={5}
+        initialY={45}
+        size={15}
+        floatSpeed={0.45}
+      />
+      <Ornament
+        type="wiggle"
+        color="#E97A3B"
+        initialX={92}
+        initialY={50}
+        size={20}
+        floatSpeed={0.52}
+      />
+      <Ornament
+        type="turd"
+        color="#6ECBE2"
+        initialX={25}
+        initialY={30}
+        size={20}
+        floatSpeed={0.48}
+      />
+      <Ornament
+        type="star"
+        color="#F88195"
+        initialX={75}
+        initialY={45}
+        size={20}
+        floatSpeed={0.58}
+      />
+      <Ornament
+        type="dot"
+        color="#38418B"
+        initialX={12}
+        initialY={88}
+        size={20}
+        floatSpeed={0.42}
+      />
+      <Ornament
+        type="wiggle"
+        color="#5ED18F"
+        initialX={88}
+        initialY={85}
+        size={15}
+        floatSpeed={0.65}
+      />
+      <Ornament
+        type="turd"
+        color="#E97A3B"
+        initialX={50}
+        initialY={92}
+        size={20}
+        floatSpeed={0.5}
+      />
+      <Ornament
+        type="star"
+        color="#6ECBE2"
+        initialX={3}
+        initialY={25}
+        size={20}
+        floatSpeed={0.62}
+      />
+      <Ornament
+        type="dot"
+        color="#F88195"
+        initialX={95}
+        initialY={35}
+        size={20}
+        floatSpeed={0.47}
+      />
+      <Ornament
+        type="wiggle"
+        color="#38418B"
+        initialX={30}
+        initialY={8}
+        size={15}
+        floatSpeed={0.55}
+      />
+      <Ornament
+        type="turd"
+        color="#5ED18F"
+        initialX={70}
+        initialY={12}
+        size={20}
+        floatSpeed={0.6}
+      />
+
+      <Container>
+        <div className="flex items-center flex-col gap-2 mb-8">
+          <Image
+            className="w-72 h-auto"
+            src="/logo.png"
+            alt="Logo"
+            width={800}
+            height={200}
+          />
+
+          <h2 className="text-2xl font-bold max-w-xl text-center text-pink-300 font-comic">
+            Maak je eigen formatiegesprek en ontdek hoe partijen tot een
+            compromis kunnen komen.
+          </h2>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+
+        {/* Conversation Dialog */}
+        <div className="flex justify-center">
+          <ConversationDialog deelnemers={deelnemers} />
+        </div>
+      </Container>
+      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 flex justify-center items-end -space-x-[5%] z-20">
+        {topDeelnemers.map((deelnemer, index) => (
+          <div
+            key={deelnemer.id}
+            className="relative w-32 h-32 overflow-hidden"
+            style={{ zIndex: topDeelnemers.length - index }}
           >
             <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+              src={`/images/partijleiders/${deelnemer.image}`}
+              alt={deelnemer.name}
+              fill
+              className="object-cover"
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+          </div>
+        ))}
+      </div>
+    </Page>
   );
 }

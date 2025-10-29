@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1761397195346,
+      "tag": "0000_nifty_shape",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1761407861362,
+      "tag": "0001_confused_triathlon",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1761676007461,
+      "tag": "0002_neat_ultimatum",
+      "breakpoints": true
+    }
+  ]
+}

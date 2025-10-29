@@ -1,0 +1,1 @@
+ALTER TABLE "berichten" ADD COLUMN "timestamp" timestamp NOT NULL;
