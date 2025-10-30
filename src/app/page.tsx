@@ -8,7 +8,7 @@ export default async function Home() {
   const topDeelnemers = deelnemers.slice(0, 5);
 
   return (
-    <Page className="items-center justify-center">
+    <Page className="items-center justify-center min-h-screen">
       {/* Decorative Ornaments */}
       <Ornament
         type="star"

@@ -66,7 +66,7 @@ export default function RootLayout({
     <html lang="nl">
       <body
         className={cn(
-          "bg-radial bg-background-end from-background-start to-background-end",
+          "bg-radial bg-background-end from-background-start to-background-end min-h-screen",
           rubikDirt.variable,
           funnelDisplay.className
         )}
