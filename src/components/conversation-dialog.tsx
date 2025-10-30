@@ -177,7 +177,7 @@ export function ConversationDialog({ deelnemers }: Props) {
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <Button size="lg" className="max-w-md w-full gap-3 h-14 text-xl">
+        <Button size="lg" className="max-w-md w-full gap-3 h-14 text-xl z-[100] relative">
           Maak een groepschat
           <MessageCirclePlusIcon />
         </Button>
