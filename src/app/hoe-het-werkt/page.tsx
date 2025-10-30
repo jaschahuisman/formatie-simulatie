@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function HoeHetWerktPage() {
   return (
-    <div className="container max-w-4xl mx-auto px-4 py-8 md:py-12">
+    <div className="container max-w-5xl mx-auto px-4 py-8 md:py-12">
       <Link href="/">
         <Button variant="ghost" className="mb-6">
           <ArrowLeftIcon className="size-4 mr-2" />
@@ -19,7 +19,7 @@ export default function HoeHetWerktPage() {
         </Button>
       </Link>
 
-      <article className="space-y-8 md:space-y-12">
+      <article className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-6 md:p-12 space-y-8 md:space-y-12">
         <div>
           <h1 className="font-comic text-4xl md:text-5xl mb-4">
             Hoe werkt Live Formatie?
@@ -55,7 +55,7 @@ export default function HoeHetWerktPage() {
           </h2>
 
           <div className="space-y-6">
-            <div className="bg-card border border-border rounded-lg p-5 md:p-6">
+            <div className="bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-xl p-5 md:p-6">
               <h3 className="font-semibold text-xl md:text-2xl mb-3 flex items-center gap-3">
                 <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold shrink-0">
                   1
@@ -69,7 +69,7 @@ export default function HoeHetWerktPage() {
               </p>
             </div>
 
-            <div className="bg-card border border-border rounded-lg p-5 md:p-6">
+            <div className="bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-xl p-5 md:p-6">
               <h3 className="font-semibold text-xl md:text-2xl mb-3 flex items-center gap-3">
                 <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold shrink-0">
                   2
@@ -84,7 +84,7 @@ export default function HoeHetWerktPage() {
               </p>
             </div>
 
-            <div className="bg-card border border-border rounded-lg p-5 md:p-6">
+            <div className="bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-xl p-5 md:p-6">
               <h3 className="font-semibold text-xl md:text-2xl mb-3 flex items-center gap-3">
                 <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold shrink-0">
                   3
@@ -115,7 +115,7 @@ export default function HoeHetWerktPage() {
               </ul>
             </div>
 
-            <div className="bg-card border border-border rounded-lg p-5 md:p-6">
+            <div className="bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-xl p-5 md:p-6">
               <h3 className="font-semibold text-xl md:text-2xl mb-3 flex items-center gap-3">
                 <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold shrink-0">
                   4
@@ -215,7 +215,7 @@ export default function HoeHetWerktPage() {
 
         <section>
           <h2 className="font-comic text-3xl mb-4">⚠️ Belangrijke notitie</h2>
-          <div className="bg-yellow-50 dark:bg-yellow-950/50 border border-yellow-200 dark:border-yellow-800/50 rounded-lg p-5 md:p-6">
+          <div className="bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-300 dark:border-yellow-700 rounded-xl p-5 md:p-6">
             <p>
               <strong>Let op:</strong> Live Formatie is een educatief hulpmiddel
               en geen voorspelling van echte formatie-onderhandelingen. De
@@ -242,7 +242,7 @@ export default function HoeHetWerktPage() {
           </div>
         </section>
 
-        <section className="text-sm border-t border-border pt-6 opacity-75">
+        <section className="text-sm border-t border-gray-200 dark:border-gray-700 pt-6 opacity-60">
           <p>
             <strong>Zetelverdeling:</strong> Gebaseerd op de eerste exitpoll
             van 2025. De standpunten zijn afgeleid van actuele
