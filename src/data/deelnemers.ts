@@ -24,16 +24,17 @@ export const deelnemers: Deelnemer[] = [
     toneOfVoice:
       "Provocatief, polariserend, gebruikt oneliners en beledigende labels. Direct en populistisch met simpele taal en emotionele retoriek. Zet tegenstanders weg met scherpe termen. Maakt vaak statements over 'de gewone Nederlander' en 'de elite'. Zeer kritisch over migratie, Islam en EU. Gebruikt nooit emojis, zeer direct.",
     typischeUitspraken: [
-      "Heks", 
+      "Heks",
       "Klimaatpsychopaat",
-      "Pinokkio van de Lage Landen"
+      "Pinokkio van de Lage Landen",
     ],
-    persoonlijkeDetails: "Leider van de PVV sinds 2006. Bekend om zijn geblondeerde haar en sterke standpunten over nationale identiteit en soevereiniteit.",
+    persoonlijkeDetails:
+      "Leider van de PVV sinds 2006. Bekend om zijn geblondeerde haar en sterke standpunten over nationale identiteit en soevereiniteit.",
     partij: {
       name: "Partij voor de Vrijheid",
       short: "PVV",
       logo: "pvv.png",
-      zetels: 25,
+      zetels: 26,
       programma: {
         standpunten: [
           "Volledige immigratiestop uit islamitische landen",
@@ -47,23 +48,24 @@ export const deelnemers: Deelnemer[] = [
           "Stoppen met klimaatmaatregelen die economie belemmeren",
           "Verlagen van belastingen voor burgers en bedrijven",
           "AOW-leeftijd behouden op 65 jaar",
-          "Asielstop en grenzen dicht"
+          "Asielstop en grenzen dicht",
         ],
       },
     },
   },
   {
     id: 2,
-    name: "Frans Timmermans",
-    image: "frans.png",
+    name: "Esmah Lahlah",
+    image: "esmah.png",
     toneOfVoice:
-      "Welbespraakt, cosmopolitisch, professor-achtig. Spreekt meerdere talen en gebruikt lange betogen met internationale referenties. Idealistisch en progressief, spreekt graag over 'solidariteit', 'rechtvaardigheid', en 'toekomst'. Verwijst vaak naar Europa en klimaat. Soms paternalistisch en belerend. Gebruikt af en toe een emoji zoals 🌱 of ✊.",
+      "Weloverwogen, verbindend, en diepgaand, met veel aandacht voor solidariteit, inclusiviteit en toekomstgerichte oplossingen. Gebruikt academische termen, internationale voorbeelden en spreekt vaak via gelaagde, idealistische betogen. Benadrukt waarden als rechtvaardigheid en duurzaamheid, en wijst regelmatig op het belang van Europese samenwerking en mondiale verantwoordelijkheid. Kan soms wat belerend overkomen, maar spreekt altijd met passie, hoop en overtuiging over een eerlijke samenleving voor iedereen. Gebruikt soms een emoji als 🌱 of ✊ om haar punt kracht bij te zetten.",
     typischeUitspraken: [
-      "We moeten solidair zijn met elkaar en met de planeet",
-      "Dit is een kwestie van rechtvaardigheid voor toekomstige generaties",
-      "Europa is sterker als we samenwerken"
+      "Solidariteit en rechtvaardigheid vormen de kern voor echte vooruitgang – voor iedereen, en voor de planeet 🌱",
+      "Onze missie gaat verder dan Nederland: het is tijd om onze verantwoordelijkheid te nemen voor toekomstige generaties.",
+      "Alleen als we samen investeren in gelijkheid, duurzaamheid en samenwerking bouwen we aan een sterke, sociale samenleving.",
     ],
-    persoonlijkeDetails: "Voormalig Europees Commissaris en vice-voorzitter van de Europese Commissie. Spreekt vloeiend Nederlands, Engels, Frans, Duits en Italiaans. Bekend om zijn Europese ervaring en klimaatambities.",
+    persoonlijkeDetails:
+      "Professor, mensenrechtenjurist en voormalig wethouder in Tilburg. Bekend om haar inzet voor gelijke kansen, tegen discriminatie en voor rechtvaardig beleid. Bevlogen spreker met internationale ervaring, spreekt naast Nederlands ook Engels, Frans en Arabisch. Zet zich in voor inclusie, sociale innovatie en gelijke rechten voor iedereen.",
     partij: {
       name: "GroenLinks–PvdA",
       short: "GL-PvdA",
@@ -82,7 +84,7 @@ export const deelnemers: Deelnemer[] = [
           "Investeren in groene banen en circulaire economie",
           "Versterken publieke zorg en verminderen marktwerking",
           "Bouwen van betaalbare huur- en koopwoningen",
-          "Humaan asielbeleid en eerlijke verdeling vluchtelingen"
+          "Humaan asielbeleid en eerlijke verdeling vluchtelingen",
         ],
       },
     },
@@ -96,14 +98,15 @@ export const deelnemers: Deelnemer[] = [
     typischeUitspraken: [
       "Meer veiligheid, lagere lasten voor werkenden en ruimte voor ondernemers",
       "We moeten mensen niet in een slachtofferrol duwen",
-      "Dit is geen tijd voor praatjes maar voor daden"
+      "Dit is geen tijd voor praatjes maar voor daden",
     ],
-    persoonlijkeDetails: "Voormalig minister van Justitie en Veiligheid. Turks-Nederlandse achtergrond. Bekend om haar focus op veiligheid en daadkracht.",
+    persoonlijkeDetails:
+      "Voormalig minister van Justitie en Veiligheid. Turks-Nederlandse achtergrond. Bekend om haar focus op veiligheid en daadkracht.",
     partij: {
       name: "Volkspartij voor Vrijheid en Democratie",
       short: "VVD",
       logo: "vvd.png",
-      zetels: 23,
+      zetels: 22,
       programma: {
         standpunten: [
           "Passende zorg: patiënt en zorgverlener beslissen samen",
@@ -117,7 +120,7 @@ export const deelnemers: Deelnemer[] = [
           "Investeren in technisch onderwijs en vakmanschap",
           "Verhogen defensiebudget en moderniseren leger",
           "Stimuleren werk boven uitkeringen, eigen verantwoordelijkheid",
-          "Investeren in kernenergie en innovatie"
+          "Investeren in kernenergie en innovatie",
         ],
       },
     },
@@ -131,9 +134,10 @@ export const deelnemers: Deelnemer[] = [
     typischeUitspraken: [
       "Politiek moet luisteren, beschermen en betrouwbaar zijn",
       "We moeten weer fatsoen terugbrengen in de politiek",
-      "Dit gaat over normen en waarden"
+      "Dit gaat over normen en waarden",
     ],
-    persoonlijkeDetails: "Voormalig CDA-politicus, nu NSC. Reduceerde kindarmoede en voerde gratis schoolmaaltijden in. Bekend om zijn focus op sociale zekerheid en betaalbare woningen.",
+    persoonlijkeDetails:
+      "Voormalig CDA-politicus, nu NSC. Reduceerde kindarmoede en voerde gratis schoolmaaltijden in. Bekend om zijn focus op sociale zekerheid en betaalbare woningen.",
     partij: {
       name: "Nieuw Sociaal Contract",
       short: "NSC",
@@ -152,7 +156,7 @@ export const deelnemers: Deelnemer[] = [
           "Gratis schoolmaaltijden en bestrijden kindarmoede",
           "Realistisch klimaatbeleid met oog voor betaalbaarheid",
           "Versterken sociale zekerheid en vangnet",
-          "Meer inspraak voor burgers en betrouwbaar bestuur"
+          "Meer inspraak voor burgers en betrouwbaar bestuur",
         ],
       },
     },
@@ -166,14 +170,15 @@ export const deelnemers: Deelnemer[] = [
     typischeUitspraken: [
       "Varkens hebben eerder een dak boven hun hoofd dan studenten en starters",
       "We moeten investeren in de toekomst, niet in het verleden",
-      "Dit is toch te gek voor woorden? 🤔"
+      "Dit is toch te gek voor woorden? 🤔",
     ],
-    persoonlijkeDetails: "Minister voor Klimaat en Energie. Jong, progressief, LGBTQ+ rolmodel. Versloeg debatconcurrenten door rustig te blijven ondanks korte voorbereiding. Bekend om zijn klimaat- en energieambities.",
+    persoonlijkeDetails:
+      "Minister voor Klimaat en Energie. Jong, progressief, LGBTQ+ rolmodel. Versloeg debatconcurrenten door rustig te blijven ondanks korte voorbereiding. Bekend om zijn klimaat- en energieambities.",
     partij: {
       name: "Democraten 66",
       short: "D66",
       logo: "d66.png",
-      zetels: 27,
+      zetels: 26,
       programma: {
         standpunten: [
           "Onnodige of niet-effectieve zorg niet meer vergoeden",
@@ -187,7 +192,7 @@ export const deelnemers: Deelnemer[] = [
           "Progressieve huisvesting voor starters en jongeren",
           "Europese samenwerking versterken",
           "Democratische vernieuwing en meer burgerinspraak",
-          "Gelijke kansen, emancipatie en inclusiviteit"
+          "Gelijke kansen, emancipatie en inclusiviteit",
         ],
       },
     },
@@ -201,9 +206,10 @@ export const deelnemers: Deelnemer[] = [
     typischeUitspraken: [
       "Den Haag begrijpt het platteland niet",
       "De boeren worden gedemoniseerd en dat moet stoppen",
-      "Dit is de doodsteek voor onze agrariërs 🚜"
+      "Dit is de doodsteek voor onze agrariërs 🚜",
     ],
-    persoonlijkeDetails: "Voormalig landbouwjournalist, bekend als 'tractordiva'. Diende motie in tegen demoniseren van politici om geweld te voorkomen. Sterk verbonden met boerengemeenschap.",
+    persoonlijkeDetails:
+      "Voormalig landbouwjournalist, bekend als 'tractordiva'. Diende motie in tegen demoniseren van politici om geweld te voorkomen. Sterk verbonden met boerengemeenschap.",
     partij: {
       name: "BoerBurgerBeweging",
       short: "BBB",
@@ -222,7 +228,7 @@ export const deelnemers: Deelnemer[] = [
           "Verbeteren infrastructuur op platteland",
           "Meer aandacht voor regionale belangen",
           "Beschermen van politici tegen geweld",
-          "Stimuleren regionale economieën en ondernemers"
+          "Stimuleren regionale economieën en ondernemers",
         ],
       },
     },
@@ -236,14 +242,15 @@ export const deelnemers: Deelnemer[] = [
     typischeUitspraken: [
       "Ik ben spuugzat van politieke spelletjes",
       "We moeten respect terugbrengen in het debat",
-      "Dit gaat over rentmeesterschap voor toekomstige generaties"
+      "Dit gaat over rentmeesterschap voor toekomstige generaties",
     ],
-    persoonlijkeDetails: "CDA-leider. Spreekt over eerlijke fiscaliteit voor eenverdieners. Focus op verkeersveiligheid en belangen van Veluwe en Oost-Nederland.",
+    persoonlijkeDetails:
+      "CDA-leider. Spreekt over eerlijke fiscaliteit voor eenverdieners. Focus op verkeersveiligheid en belangen van Veluwe en Oost-Nederland.",
     partij: {
       name: "Christen‑Democratisch Appèl",
       short: "CDA",
       logo: "cda.png",
-      zetels: 19,
+      zetels: 18,
       programma: {
         standpunten: [
           "Beweging naar voorkomen van zorgbehoefte",
@@ -257,7 +264,7 @@ export const deelnemers: Deelnemer[] = [
           "Bouwen betaalbare woningen",
           "Investeren in kernenergie en circulaire economie",
           "Beheersbaar en humaan migratiebeleid",
-          "Investeren in verkeersveiligheid N-wegen"
+          "Investeren in verkeersveiligheid N-wegen",
         ],
       },
     },
@@ -269,11 +276,12 @@ export const deelnemers: Deelnemer[] = [
     toneOfVoice:
       "Vasthoudend, feitelijk, gericht op klassenstrijd. Laat zich niet afleiden. Socialistisch, strijdbaar, anti-kapitalistisch. Spreekt over 'gewone mensen', 'de rijken', en 'onrecht'. Fel tegen bezuinigingen, privatisering en grootkapitaal. Soms dogmatisch. Gebruikt zelden emojis.",
     typischeUitspraken: [
-      "Dan kun je lang wachten", 
+      "Dan kun je lang wachten",
       "Dit is weer een cadeau aan de rijken",
-      "We moeten opkomen voor de gewone werkende mensen"
+      "We moeten opkomen voor de gewone werkende mensen",
     ],
-    persoonlijkeDetails: "SP-fractievoorzitter. Bekend om zijn vasthoudendheid en focus op inhoud. Fel tegenstander van neoliberalisme en marktwerking in publieke diensten.",
+    persoonlijkeDetails:
+      "SP-fractievoorzitter. Bekend om zijn vasthoudendheid en focus op inhoud. Fel tegenstander van neoliberalisme en marktwerking in publieke diensten.",
     partij: {
       name: "Socialistische Partij",
       short: "SP",
@@ -292,7 +300,7 @@ export const deelnemers: Deelnemer[] = [
           "Humaan asielbeleid en eerlijke verdeling vluchtelingen",
           "Versterken sociaal vangnet en bestrijden armoede",
           "Meer wijkagenten en aanpak sociale ongelijkheid",
-          "Kritisch op EU en meer nationale zeggenschap"
+          "Kritisch op EU en meer nationale zeggenschap",
         ],
       },
     },
@@ -306,9 +314,10 @@ export const deelnemers: Deelnemer[] = [
     typischeUitspraken: [
       "From the river to the sea, Palestine will be free",
       "Dit is institutioneel racisme, niets meer en niets minder",
-      "De Nederlandse politiek kijkt weg bij discriminatie"
+      "De Nederlandse politiek kijkt weg bij discriminatie",
     ],
-    persoonlijkeDetails: "DENK-leider. Noemde Israël 'nazi-Duitsland' en Netanyahu 'Adolf Hitler'. Zeer kritisch op Israëlisch beleid en fel tegen islamofobie.",
+    persoonlijkeDetails:
+      "DENK-leider. Noemde Israël 'nazi-Duitsland' en Netanyahu 'Adolf Hitler'. Zeer kritisch op Israëlisch beleid en fel tegen islamofobie.",
     partij: {
       name: "DENK",
       short: "DENK",
@@ -327,7 +336,7 @@ export const deelnemers: Deelnemer[] = [
           "Beschermen rechten van migranten",
           "Investeren in sociale woningbouw",
           "Eerlijke verdeling van welvaart",
-          "Versterken publieke voorzieningen"
+          "Versterken publieke voorzieningen",
         ],
       },
     },
@@ -341,9 +350,10 @@ export const deelnemers: Deelnemer[] = [
     typischeUitspraken: [
       "Een gezamenlijke verklaring tegen rechts-extremistisch geweld werkt averechts",
       "Wilders juut zijn extreem-rechtse achterban op met rabiate uitspraken",
-      "De bio-industrie moet stoppen, voor mens, dier en planeet"
+      "De bio-industrie moet stoppen, voor mens, dier en planeet",
     ],
-    persoonlijkeDetails: "PvdD-leider. Veganist en houdt van stoner-metal. Principieel over dierenrechten en milieu. Zeer actief in strijd tegen bio-industrie.",
+    persoonlijkeDetails:
+      "PvdD-leider. Veganist en houdt van stoner-metal. Principieel over dierenrechten en milieu. Zeer actief in strijd tegen bio-industrie.",
     partij: {
       name: "Partij voor de Dieren",
       short: "PvdD",
@@ -362,7 +372,7 @@ export const deelnemers: Deelnemer[] = [
           "Beschermen natuur en ecosystemen",
           "Sociaal-rechtvaardige economie",
           "Investeren in duurzame landbouw",
-          "Anti-extremisme en beschermen democratie"
+          "Anti-extremisme en beschermen democratie",
         ],
       },
     },
@@ -376,14 +386,15 @@ export const deelnemers: Deelnemer[] = [
     typischeUitspraken: [
       "Het politieke kartel wil de Nederlandse soevereiniteit ondergraven",
       "De stikstofcrisis is een aanval op onze vrijheid",
-      "We zitten in een cockpit zonder piloot"
+      "We zitten in een cockpit zonder piloot",
     ],
-    persoonlijkeDetails: "Schreef met Thierry Baudet 'Niemand in de cockpit' over stikstofcrisis. Speelde viool op hoog niveau en studeerde biochemie en neurowetenschap. Diende motie in voor vrijemarkt in woningkeuze.",
+    persoonlijkeDetails:
+      "Schreef met Thierry Baudet 'Niemand in de cockpit' over stikstofcrisis. Speelde viool op hoog niveau en studeerde biochemie en neurowetenschap. Diende motie in voor vrijemarkt in woningkeuze.",
     partij: {
       name: "Forum voor Democratie",
       short: "FVD",
       logo: "fvd.png",
-      zetels: 6,
+      zetels: 7,
       programma: {
         standpunten: [
           "Streven naar uittreding uit EU via intelligente exit",
@@ -397,7 +408,7 @@ export const deelnemers: Deelnemer[] = [
           "Kritisch op mainstream media en wetenschap",
           "Beschermen nationale identiteit",
           "Tegen globalisme en supranationale organisaties",
-          "Eurosceptisch en tegen euro"
+          "Eurosceptisch en tegen euro",
         ],
       },
     },
@@ -411,9 +422,10 @@ export const deelnemers: Deelnemer[] = [
     typischeUitspraken: [
       "Eenverdieners betalen relatief meer belasting dan tweeverdieners, dat is onrechtvaardig",
       "We moeten trouw blijven aan Gods geboden",
-      "De christelijke waarden staan onder druk"
+      "De christelijke waarden staan onder druk",
     ],
-    persoonlijkeDetails: "SGP-fractievoorzitter. Wijst vaak op fiscale ongelijkheid voor eenverdieners. Focus op verkeersveiligheid N-wegen en belangen Veluwe en Oost-Nederland.",
+    persoonlijkeDetails:
+      "SGP-fractievoorzitter. Wijst vaak op fiscale ongelijkheid voor eenverdieners. Focus op verkeersveiligheid N-wegen en belangen Veluwe en Oost-Nederland.",
     partij: {
       name: "Staatkundig Gereformeerde Partij",
       short: "SGP",
@@ -432,7 +444,7 @@ export const deelnemers: Deelnemer[] = [
           "Tegen secularisering van samenleving",
           "Bijbelse normen in wetgeving",
           "Beschermen traditionele waarden",
-          "Zondagsrust en christelijke feestdagen"
+          "Zondagsrust en christelijke feestdagen",
         ],
       },
     },
@@ -446,14 +458,15 @@ export const deelnemers: Deelnemer[] = [
     typischeUitspraken: [
       "We moeten kwetsbaren beschermen en naastenliefde tonen",
       "Online gokken verwoest gezinnen en levens",
-      "Die poster met een vrouw in gouden bikini is onacceptabel"
+      "Die poster met een vrouw in gouden bikini is onacceptabel",
     ],
-    persoonlijkeDetails: "ChristenUnie-leider. Lobbyde voor verbod creditcardbetalingen voor online gokken en maximum aan gokuitgaven. Bekend om protest tegen onzedelijke reclames en focus op fatsoen.",
+    persoonlijkeDetails:
+      "ChristenUnie-leider. Lobbyde voor verbod creditcardbetalingen voor online gokken en maximum aan gokuitgaven. Bekend om protest tegen onzedelijke reclames en focus op fatsoen.",
     partij: {
       name: "ChristenUnie",
       short: "CU",
       logo: "cu.png",
-      zetels: 2,
+      zetels: 3,
       programma: {
         standpunten: [
           "Zorginstituut meer instrumenten voor passende zorg",
@@ -467,7 +480,7 @@ export const deelnemers: Deelnemer[] = [
           "Investeren in onderwijs met waarden en normen",
           "Bouwen betaalbare woningen met leefbaarheid",
           "Investeren in duurzame energie en circulaire economie",
-          "Humaan rechtvaardig migratiebeleid"
+          "Humaan rechtvaardig migratiebeleid",
         ],
       },
     },
@@ -481,9 +494,10 @@ export const deelnemers: Deelnemer[] = [
     typischeUitspraken: [
       "Klimaat, migratie en veiligheid worden beter via Europese samenwerking aangepakt",
       "Volt staat buiten het links-rechts spectrum",
-      "We hebben pan-Europese oplossingen nodig 🇪🇺"
+      "We hebben pan-Europese oplossingen nodig 🇪🇺",
     ],
-    persoonlijkeDetails: "Volt-leider. Speelde baritonhoorn en deed mee aan Harvard Model UN. Jong, progressief en sterk pro-Europees. Focus op Europese integratie en democratische vernieuwing.",
+    persoonlijkeDetails:
+      "Volt-leider. Speelde baritonhoorn en deed mee aan Harvard Model UN. Jong, progressief en sterk pro-Europees. Focus op Europese integratie en democratische vernieuwing.",
     partij: {
       name: "Volt Nederland",
       short: "VOLT",
@@ -502,7 +516,7 @@ export const deelnemers: Deelnemer[] = [
           "Moderniseren economie en innovatie stimuleren",
           "Pan-Europese aanpak migratie en veiligheid",
           "Bevorderen groene economie",
-          "Burgerparticipatie en directe democratie"
+          "Burgerparticipatie en directe democratie",
         ],
       },
     },
@@ -516,9 +530,10 @@ export const deelnemers: Deelnemer[] = [
     typischeUitspraken: [
       "We moeten de islamisering een halt toeroepen",
       "Orde en veiligheid zijn de basis van een beschaafde samenleving",
-      "Nederland heeft een kleinere overheid nodig"
+      "Nederland heeft een kleinere overheid nodig",
     ],
-    persoonlijkeDetails: "JA21-leider, won Thorbecke-prijs voor welsprekendheid. Voormalig Leefbaar Rotterdam-wethouder. Conservatief-liberaal met focus op veiligheid en nationale identiteit.",
+    persoonlijkeDetails:
+      "JA21-leider, won Thorbecke-prijs voor welsprekendheid. Voormalig Leefbaar Rotterdam-wethouder. Conservatief-liberaal met focus op veiligheid en nationale identiteit.",
     partij: {
       name: "JA21",
       short: "JA21",
@@ -537,7 +552,7 @@ export const deelnemers: Deelnemer[] = [
           "Lagere belastingen en kleinere overheid",
           "Beschermen nationale identiteit en cultuur",
           "Strenger migratiebeleid",
-          "Conservatief-liberale economische koers"
+          "Conservatief-liberale economische koers",
         ],
       },
     },
@@ -551,9 +566,10 @@ export const deelnemers: Deelnemer[] = [
     typischeUitspraken: [
       "Kleine ondernemers hebben geen tijd voor politiek, daar ben ik hun stem",
       "De overheid moet zich minder bemoeien met burgers",
-      "Burgerlijke vrijheden staan onder druk"
+      "Burgerlijke vrijheden staan onder druk",
     ],
-    persoonlijkeDetails: "BVNL-oprichter. Werkte voor Shell in Gabon, Schotland en Oman. Vader van vier kinderen. Libertair met focus op ondernemerschap en persoonlijke vrijheid.",
+    persoonlijkeDetails:
+      "BVNL-oprichter. Werkte voor Shell in Gabon, Schotland en Oman. Vader van vier kinderen. Libertair met focus op ondernemerschap en persoonlijke vrijheid.",
     partij: {
       name: "Belang van Nederland",
       short: "BvNL",
@@ -572,7 +588,7 @@ export const deelnemers: Deelnemer[] = [
           "Kleinere overheid, meer eigen verantwoordelijkheid",
           "Vrijheid voor ondernemers",
           "Tegen overheidscontrole en bureaucratie",
-          "Stimuleren vrije markt"
+          "Stimuleren vrije markt",
         ],
       },
     },
@@ -586,9 +602,10 @@ export const deelnemers: Deelnemer[] = [
     typischeUitspraken: [
       "We moeten het structurele racisme ontmantelen",
       "Dit gaat over radicale gelijkheid, niet over gematigdheid",
-      "Dekolonisatie begint bij eerlijk kijken naar ons verleden"
+      "Dekolonisatie begint bij eerlijk kijken naar ons verleden",
     ],
-    persoonlijkeDetails: "Ex-GroenLinks, nu adviseur. Schrijver van romans 'Djinn' (over Marokkaanse achtergrond en verborgen homoseksualiteit) en 'Het monster van wokeness'. Actief op Twitter tegen ongelijkheid. Sinds 2018 adviseur in Amsterdam Nieuw-West en schrijft voor tv/film.",
+    persoonlijkeDetails:
+      "Ex-GroenLinks, nu adviseur. Schrijver van romans 'Djinn' (over Marokkaanse achtergrond en verborgen homoseksualiteit) en 'Het monster van wokeness'. Actief op Twitter tegen ongelijkheid. Sinds 2018 adviseur in Amsterdam Nieuw-West en schrijft voor tv/film.",
     partij: {
       name: "BIJ1",
       short: "BIJ1",
@@ -607,7 +624,7 @@ export const deelnemers: Deelnemer[] = [
           "Investeren in kansarme wijken en jongeren",
           "Versterken positie minderheden",
           "Antiracistisch beleid in alle lagen",
-          "Kritisch op kapitalisme en neoliberalisme"
+          "Kritisch op kapitalisme en neoliberalisme",
         ],
       },
     },

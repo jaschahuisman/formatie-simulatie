@@ -28,10 +28,10 @@ export const metadata: Metadata = {
     url: baseUrl,
     images: [
       {
-        url: "/logo.png",
-        width: 800,
-        height: 200,
-        alt: "Live Formatie Logo",
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Live Formatie - Politieke Gesprekken",
       },
     ],
   },
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     title: "Live Formatie - Politieke Gesprekken",
     description:
       "Maak je eigen formatiegesprek en ontdek hoe politieke partijen tot een compromis kunnen komen.",
-    images: ["/logo.png"],
+    images: ["/og-image.png"],
   },
 };
 

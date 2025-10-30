@@ -38,3 +38,4 @@ export function TypingIndicator({ name, image }: Props) {
   );
 }
 
+
