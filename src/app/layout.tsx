@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Toaster } from "sonner";
 import { Footer } from "@/components/footer";
+import { Analytics } from "@vercel/analytics/next";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL!;
 
@@ -71,6 +72,7 @@ export default function RootLayout({
           funnelDisplay.className
         )}
       >
+        <Analytics />
         <Toaster richColors position="top-center" />
         {children}
         <Footer />
