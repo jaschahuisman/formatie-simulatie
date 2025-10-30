@@ -11,6 +11,13 @@ import { createLogger } from "@/lib/logger";
 
 const logger = createLogger("genereer-gesprek-berichten");
 
+// Constants for conversation context management
+const CONTEXT_THRESHOLD = 15; // Show summary when conversation has >15 messages
+const RECENT_MESSAGES_COUNT = 5; // Number of recent messages to show for reactions
+const LEAST_ACTIVE_THRESHOLD = 3; // Minimum message count to be considered "active"
+const MAX_TURNS_TO_USE = 3; // Maximum turns to use from AI response (even if it generates more)
+const LAST_BATCH_THRESHOLD = 10; // Remaining messages threshold to trigger last batch mode
+
 export type GeneratedMessage = {
   message: string;
   deelnemerName: string;
@@ -97,32 +104,23 @@ export function addDeelnemerIdsToAIGeneratedMessages(
 }
 
 /**
- * Build the system message for the AI.
- * @param opties - The options for the conversation.
- * @returns The system message for the AI.
+ * Build role and objective section
  */
-const buildSystemMessage = (opties: {
-  onderwerp: string;
-  deelnemers: Deelnemer[];
-}) => {
-  // Sorteer deelnemers op zetels (hoog naar laag) voor duidelijke machtsverhoudingen
-  const sortedDeelnemers = [...opties.deelnemers].sort(
-    (a, b) => b.partij.zetels - a.partij.zetels
-  );
-
-  const totalZetels = sortedDeelnemers.reduce(
-    (sum, d) => sum + d.partij.zetels,
-    0
-  );
-  const majorityNeeded = 76; // Meerderheid in Tweede Kamer
-
+function buildRoleSection(onderwerp: string): string {
   return `
     # Rol
     Je bent een expert in het schrijven van realistische Nederlandse politieke onderhandelingen. 
     Je schrijft een constructief gesprek tussen politici die tot een compromis proberen te komen.
     
     # Onderwerp
-    ${opties.onderwerp}
+    ${onderwerp}`;
+}
+
+/**
+ * Build deelnemers section with their details
+ */
+function buildDeelemersSection(sortedDeelnemers: Deelnemer[]): string {
+  return `
     
     # Deelnemers (gesorteerd op zetels)
     ${sortedDeelnemers
@@ -148,7 +146,20 @@ const buildSystemMessage = (opties: {
             .join("\n          ")}
     `
       )
-      .join("\n")}
+      .join("\n")}`;
+}
+
+/**
+ * Build zetelverdeling section
+ */
+function buildZetelverdeling(sortedDeelnemers: Deelnemer[]): string {
+  const totalZetels = sortedDeelnemers.reduce(
+    (sum, d) => sum + d.partij.zetels,
+    0
+  );
+  const majorityNeeded = 76;
+
+  return `
     
     # Zetelverdeling & Machtsbalans
     - Totaal zetels aan tafel: ${totalZetels}
@@ -162,100 +173,171 @@ const buildSystemMessage = (opties: {
     sortedDeelnemers[sortedDeelnemers.length - 1].partij.zetels
   } zetels)
     
-    ## Strategisch gebruik van zetels in het gesprek
-    Politici kunnen en MOETEN hun zetels strategisch inzetten in hun argumentatie:
-    - **Grote partijen** (>20 zetels) kunnen hun mandaat benadrukken: "Met 37 zetels hebben we een duidelijk mandaat van de kiezer"
-    - **Kleine partijen** kunnen hun unieke positie benadrukken: "Jullie hebben mij nodig voor een meerderheid"
-    - Coalitiekansen benoemen: "Samen hebben wij X zetels, dat is genoeg voor..."
-    - Anderen motiveren: "Met jouw zetels erbij kunnen we dit realiseren"
-    - Realisme tonen: "Jullie hebben maar X zetels, dat is niet genoeg om dit door te drukken"
+    Politici kunnen zetels strategisch inzetten:
+    - Grote partijen (>20 zetels): mandaat benadrukken
+    - Kleine partijen: unieke positie als "kingmaker"
+    - Coalitiekansen benoemen
+    - Realisme tonen over macht`;
+}
+
+/**
+ * Build chat-style format section
+ */
+function buildChatStyleSection(): string {
+  return `
     
-    ⚠️ BELANGRIJK: Laat politici regelmatig (maar niet overdreven) naar zetels verwijzen als dat strategisch logisch is!
+    # Chat-stijl Format
+    - Dit is een GROEPSCHAT. Politici sturen korte berichten zoals in WhatsApp
+    - Per beurt 1-3 berichten:
+      * MEESTAL 1 bericht (korte reactie)
+      * SOMS 2 berichten (uitgebreider)
+      * ZELDEN 3 berichten (complex punt)
+    - Berichten zijn ZEER KORT (meestal 1 korte zin, max 15-20 woorden)
+    - Emojis: spaarzaam, vooral door jongere politici (Rob Jetten, Laurens Dassen)`;
+}
+
+/**
+ * Build reactive flow section
+ */
+function buildReactiveFlowSection(): string {
+  return `
     
-    # Belangrijke Regels
-    - Het gesprek moet realistisch en constructief zijn, gericht op het vinden van een compromis
-    - Laat politici:
-      * Hun standpunten duidelijk maken
-      * Naar elkaar luisteren en reageren
-      * Kritische vragen stellen
-      * Bezwaren uiten maar ook openingen zoeken
-      * Langzaam naar elkaar toe bewegen
-    - Het gesprek moet een verhaalboog hebben: begin (standpunten), midden (discussie), einde (toenadering)
-    - Het gesprek moet eindigen met ruimte voor een compromis of concrete stappen richting oplossing
-    - Blijf realistisch: politici blijven hun kernwaarden verdedigen maar zijn bereid te onderhandelen
+    # Reactieve Flow
+    - Politici reageren direct op wat er net gezegd is
+    - Bepaal logisch wie getriggerd wordt:
+      * Tegenpolen: Wilders ↔ Timmermans
+      * Coalitiegenoten steunen elkaar
+    - Reacties moeten logisch aansluiten op laatste berichten`;
+}
+
+/**
+ * Build Kamer bevoegdheden section
+ */
+function buildKamerBevoegdhedenSection(): string {
+  return `
     
-# Chat-stijl Format
-- Dit is een GROEPSCHAT. Politici sturen korte, snelle berichten zoals in WhatsApp
-- Elk persoon stuurt 1-3 berichten per beurt (een "burst"):
-  * MEESTAL 1 bericht: korte reactie zoals "Precies!", "Totaal mee oneens", "Dat klopt niet"
-  * SOMS 2 berichten: iets uitgebreider, een argument in twee stappen
-  * ZELDEN 3 berichten: alleen bij complexere punten of opbouw van argument
-  * DENK NA: hoeveel berichten zijn ECHT nodig? Minder is meer!
-- Berichten zijn ZEER KORT:
-  * Meestal 1 korte zin of minder
-  * Vaak halve zinnen of uitroepen: "Precies!", "Dat slaat nergens op.", "Kom op zeg."
-  * Maximum 15-20 woorden per bericht
-- Emojis zijn toegestaan en moeten spaarzaam gebruikt worden:
-  * Vooral door jongere/informelere politici (Rob Jetten, Laurens Dassen)
-  * Voorbeelden: 🔥 💪 🤔 ✅ ❌ 👍 😅 🎯
-  * Oudere/formelere politici gebruiken zelden of nooit emojis
+    # Kamer Bevoegdheden
     
-    # Reactieve Flow - WIE reageert op WIE
-    - Politici REAGEREN direct op wat er net gezegd is
-    - Bepaal logisch wie getriggerd wordt door de laatste spreker:
-      * Tegenpolen reageren vaak op elkaar: Wilders ↔ Timmermans, PVV ↔ GL-PvdA
-      * Coalitiegenoten steunen elkaar: VVD + NSC, GL-PvdA + D66 + PvdD
-      * Partijen met overlap kunnen kritisch zijn: VVD vs JA21, BBB vs PVV
-    - Als iemand een provocerende uitspraak doet, laat anderen reageren
-    - Niet elke politicus hoeft elke ronde te spreken
-    - Laat het gesprek natuurlijk vloeien: wie zou nu logisch reageren?
+    ✅ WEL: Moties, wetsvoorstellen, begrotingswijzigingen, hoorzittingen
+    ❌ NIET: Direct onderhandelen met bedrijven, uitvoerende taken
     
-    ⚠️ CRUCIAAL: REACTIES MOETEN LOGISCH AANSLUITEN
-    - Als je iemand bij naam aanspreekt (bijv. "Dilan, ..."), reageer dan ALLEEN op wat die persoon NET heeft gezegd
-    - VERBODEN: Reageren op iets wat NIET gezegd is. Lees de laatste berichten GOED.
-    - Als politicus A zegt "De economie moet groeien" en politicus B reageert met "Dat klopt niet", dan moet dat gaan over de economie, niet over iets anders
-    - Test jezelf: KAN ik mijn reactie onderbouwen met een letterlijk citaat uit de laatste berichten? Zo nee, pas de reactie aan.
-    - Zetels alleen noemen als het RELEVANT is voor het punt dat net gemaakt is, niet uit het niets
-    
-    # Rol en Bevoegdheden van Tweede Kamerleden - BELANGRIJK!
-    
-    Deze politici zijn leden van de Tweede Kamer. Ze hebben SPECIFIEKE bevoegdheden:
-    
-    ✅ WAT KAMERLEDEN WEL KUNNEN DOEN:
-    - Moties indienen om regering op te dragen iets te (onderzoeken)
-    - Kamervragen stellen aan ministers
-    - Wetsvoorstellen indienen of amenderen
-    - Begroting wijzigen (subsidies, belastingen)
-    - Hoorzittingen organiseren met experts
-    - Debatten voeren en ministers ter verantwoording roepen
-    
-    ❌ WAT KAMERLEDEN NIET KUNNEN DOEN:
-    - Direct onderhandelen met bedrijven (dat doet het kabinet/ministeries)
-    - Uitvoerende taken (dat is de regering)
-    - Direct ingrijpen in de markt zonder wetgeving
-    - Individuele gevallen behandelen
-    
-    💡 VOORBEELDEN VAN REALISTISCHE OPLOSSINGEN:
-    
-    FOUT: "Laten we met de Appie in gesprek over prijzen"
-    GOED: "Ik dien een motie in om de minister te vragen prijsontwikkeling te onderzoeken"
-    
-    FOUT: "We gaan zelf de woningmarkt reguleren"
-    GOED: "We moeten wetgeving aanpassen voor betaalbare huur"
-    
-    FOUT: "Ik ga persoonlijk de zorg verbeteren"
-    GOED: "Via de begroting kunnen we meer geld naar thuiszorg"
-    
-    ⚠️ VERPLICHT: Als politici oplossingen voorstellen, gebruik dan REALISTISCHE Kamer-instrumenten:
+    Gebruik realistische instrumenten:
     - "Ik dien een motie in..."
     - "We kunnen via de begroting..."
-    - "Laten we wetgeving aanpassen voor..."
-    - "Kamervragen stellen aan de minister over..."
-    - "Een hoorzitting organiseren met..."
-    
-    - Gebruik de partijstandpunten en tone of voice van elke politicus
-    - Houd het constructief maar wel met realistische spanning en meningsverschillen
-    `;
+    - "Laten we wetgeving aanpassen..."`;
+}
+
+/**
+ * Build user prompt for the AI
+ */
+function buildUserPrompt(options: {
+  conversationContext: string;
+  lastSpeakerContext: string;
+  speakerDistributionContext: string;
+  phase: "begin" | "midden" | "einde";
+  phaseInstructions: string;
+  isLastBatch: boolean;
+}): string {
+  const baseTurnInstructions = options.isLastBatch
+    ? "⚠️ DIT IS HET LAATSTE STUK - GENEREER 2 OF 3 BEURTEN ⚠️\n\nHet gesprek moet eindigen met toenadering en perspectief op een compromis."
+    : "⚠️ GENEREER 2 OF 3 BEURTEN ⚠️";
+
+  return `${options.conversationContext}${options.lastSpeakerContext}${options.speakerDistributionContext}
+
+## Fase: ${options.phase.toUpperCase()}
+${options.phaseInstructions}
+
+${baseTurnInstructions}
+
+Aantal beurten: 2 of 3
+Berichten per beurt: MEESTAL 1, SOMS 2, ZELDEN 3
+Maximum 3 politici mogen reageren.
+
+WIE zou logisch reageren op de LAATSTE BERICHTEN? Overweeg:
+- Wie wordt getriggerd door wat er in de LAATSTE BERICHTEN gezegd is?
+- Reageer op de INHOUD van die specifieke berichten
+${options.isLastBatch ? "- Laat het gesprek natuurlijk naar een conclusie vloeien" : ""}`;
+}
+
+/**
+ * Build conversation summary context
+ */
+function buildConversationSummaryContext(
+  messageCount: number,
+  onderwerp: string
+): string {
+  if (messageCount > CONTEXT_THRESHOLD) {
+    return `\n## Context:\nEr zijn al ${messageCount} berichten uitgewisseld. Het gesprek over "${onderwerp}" is in volle gang.\n\n⚠️ LET OP: Reageer ALLEEN op de LAATSTE BERICHTEN hieronder, niet op eerdere discussiepunten.\n`;
+  } else if (messageCount > 0) {
+    return `\n## Context:\nHet gesprek heeft ${messageCount} berichten. Reageer ALLEEN op de LAATSTE BERICHTEN hieronder.\n`;
+  }
+  return "";
+}
+
+/**
+ * Build last speaker context (recent messages)
+ */
+function buildLastSpeakerContext(
+  recentMessages: GeneratedMessage[]
+): string {
+  if (recentMessages.length === 0) return "";
+
+  return `\n## ⚠️ LAATSTE BERICHTEN - DIT IS ALLES WAT JE HEBT:\n${recentMessages
+    .map((m, i) => `[${i + 1}] ${m.deelnemerName}: "${m.message}"`)
+    .join("\n")}\n\n🚨 KRITIEKE REGEL: Reageer UITSLUITEND op wat HIERBOVEN staat. NIETS anders.
+
+Checklist voor ELKE reactie:
+1. Als je iemand bij naam noemt: staat die persoon hierboven? ✓
+2. Als je een argument bekritiseert: staat dat argument hierboven? ✓
+3. Als je zetels noemt: is dat relevant voor wat hierboven gezegd is? ✓
+`;
+}
+
+/**
+ * Build speaker distribution context
+ */
+function buildSpeakerDistributionContext(
+  deelnemers: Deelnemer[],
+  speakerCounts: Map<string, number>
+): string {
+  const deelnemersBySpeechCount = deelnemers
+    .map((d) => ({
+      name: d.name,
+      count: speakerCounts.get(d.name) || 0,
+    }))
+    .sort((a, b) => a.count - b.count);
+
+  const leastActiveDeelnemers = deelnemersBySpeechCount
+    .filter((d) => d.count < LEAST_ACTIVE_THRESHOLD)
+    .map((d) => d.name);
+
+  if (leastActiveDeelnemers.length > 0) {
+    return `\n## BELANGRIJK - Sprekersverdeling:\nDeze politici hebben nog weinig gesproken: ${leastActiveDeelnemers.join(", ")}\nVarieer de sprekers!\n`;
+  }
+  return "\n## BELANGRIJK - Sprekersverdeling:\nVarieer de sprekers! Laat ook andere politici aan het woord.\n";
+}
+
+/**
+ * Build the system message for the AI.
+ * @param opties - The options for the conversation.
+ * @returns The system message for the AI.
+ */
+const buildSystemMessage = (opties: {
+  onderwerp: string;
+  deelnemers: Deelnemer[];
+}) => {
+  const sortedDeelnemers = [...opties.deelnemers].sort(
+    (a, b) => b.partij.zetels - a.partij.zetels
+  );
+
+  return (
+    buildRoleSection(opties.onderwerp) +
+    buildDeelemersSection(sortedDeelnemers) +
+    buildZetelverdeling(sortedDeelnemers) +
+    buildChatStyleSection() +
+    buildReactiveFlowSection() +
+    buildKamerBevoegdhedenSection()
+  );
 };
 
 export async function genereerGesprekBerichten(opties: {
@@ -291,22 +373,18 @@ export async function genereerGesprekBerichten(opties: {
     const remainingMessages =
       GESPREK_TARGET_MESSAGES_COUNT - generatedMessages.length;
 
-    const isLastBatch = remainingMessages <= 10; // Als we dichtbij het einde zijn
+    const isLastBatch = remainingMessages <= LAST_BATCH_THRESHOLD;
 
     logger.debug(
       `Generating batch ${batchCount} with ${GESPREK_TURNS_PER_BATCH} turns (${remainingMessages} messages remaining)`,
       { phase, remainingMessages }
     );
 
-    // Context: ALLEEN een samenvatting bij lange gesprekken
-    // We tonen GEEN individuele eerdere berichten om verwarring te voorkomen
-    // De AI mag ALLEEN reageren op de laatste 5 berichten
-    const conversationSummaryContext =
-      generatedMessages.length > 15
-        ? `\n## Context:\nEr zijn al ${generatedMessages.length} berichten uitgewisseld. Het gesprek over "${opties.onderwerp}" is in volle gang.\n\n⚠️ LET OP: Reageer ALLEEN op de LAATSTE BERICHTEN hieronder, niet op eerdere discussiepunten.\n`
-        : generatedMessages.length > 0
-        ? `\n## Context:\nHet gesprek heeft ${generatedMessages.length} berichten. Reageer ALLEEN op de LAATSTE BERICHTEN hieronder.\n`
-        : "";
+    // Build context for AI prompt
+    const conversationSummaryContext = buildConversationSummaryContext(
+      generatedMessages.length,
+      opties.onderwerp
+    );
 
     const phaseInstructions = {
       begin:
@@ -317,40 +395,10 @@ export async function genereerGesprekBerichten(opties: {
         "Dit is het EINDE van het gesprek. Politici moeten nu naar elkaar toebewegen. Laat zien dat er ruimte is voor een compromis of dat er concrete vervolgstappen worden gezet. Eindig constructief met perspectief op een oplossing.",
     };
 
-    // Laatste 5 berichten - ENIGE BASIS voor reacties
-    const recentMessages = generatedMessages.slice(-5);
-    const lastSpeakerContext =
-      recentMessages.length > 0
-        ? `\n## ⚠️ LAATSTE BERICHTEN - DIT IS ALLES WAT JE HEBT:\n${recentMessages
-            .map((m, i) => `[${i + 1}] ${m.deelnemerName}: "${m.message}"`)
-            .join(
-              "\n"
-            )}\n\n🚨 KRITIEKE REGEL: Reageer UITSLUITEND op wat HIERBOVEN staat. NIETS anders.
+    const recentMessages = generatedMessages.slice(-RECENT_MESSAGES_COUNT);
+    const lastSpeakerContext = buildLastSpeakerContext(recentMessages);
 
-📋 VERPLICHTE CHECKLIST voor ELKE reactie:
-1. Als je iemand bij naam noemt ("Dilan, ..." of "Dat klopt niet, Frans"), CHECK:
-   - Staat die persoon in berichten [1] t/m [${recentMessages.length}]? ✓
-   - Reageer je op wat die persoon DAAR zei? ✓
-   - Niet op iets van eerder? ✓
-
-2. Als je een argument bekritiseert ("Dat is onzin", "Dat klopt niet"):
-   - Staat dat argument LETTERLIJK hierboven? ✓
-   - Kun je het citeren uit [1] t/m [${recentMessages.length}]? ✓
-
-3. Als je zetels noemt:
-   - Is dat relevant voor wat HIERBOVEN gezegd is? ✓
-
-❌ FOUT VOORBEELD:
-   Bericht [3]: Dilan: "De economie moet groeien"
-   FOUT reactie: "Caroline, dat is onzin" ← Caroline heeft niks gezegd!
-   
-✅ GOED VOORBEELD:
-   Bericht [3]: Dilan: "De economie moet groeien"
-   GOED reactie: "Dilan, economische groei is belangrijk, maar..."
-`
-        : "";
-
-    // Track wie er al gesproken heeft en hoe vaak
+    // Track speaker counts
     const speakerCounts = new Map<string, number>();
     generatedMessages.forEach((m) => {
       speakerCounts.set(
@@ -359,67 +407,19 @@ export async function genereerGesprekBerichten(opties: {
       );
     });
 
-    // Sorteer politici: wie heeft het minst gesproken?
-    const deelnemersBySpeechCount = opties.deelnemers
-      .map((d) => ({
-        name: d.name,
-        count: speakerCounts.get(d.name) || 0,
-      }))
-      .sort((a, b) => a.count - b.count);
+    const speakerDistributionContext = buildSpeakerDistributionContext(
+      opties.deelnemers,
+      speakerCounts
+    );
 
-    const leastActiveDeelnemers = deelnemersBySpeechCount
-      .filter((d) => d.count < 3)
-      .map((d) => d.name);
-
-    const speakerDistributionContext =
-      leastActiveDeelnemers.length > 0
-        ? `\n## BELANGRIJK - Sprekersverdeling:\nDeze politici hebben nog weinig of niet gesproken en zouden nu aan bod moeten komen: ${leastActiveDeelnemers.join(
-            ", "
-          )}\nVarieer de sprekers! Niet altijd dezelfde mensen laten reageren.\n`
-        : "\n## BELANGRIJK - Sprekersverdeling:\nVarieer de sprekers! Laat ook andere politici aan het woord komen, niet alleen degenen die al veel gezegd hebben.\n";
-
-    const userPrompt = isLastBatch
-      ? `${conversationSummaryContext}${lastSpeakerContext}${speakerDistributionContext}
-
-## Fase: ${phase.toUpperCase()} 
-${phaseInstructions[phase]}
-
-⚠️ DIT IS HET LAATSTE STUK - GENEREER EXACT 2 OF 3 BEURTEN ⚠️
-
-Aantal beurten: 2 of 3 (niet meer!)
-Berichten per beurt: MEESTAL 1 bericht, SOMS 2, ZELDEN 3
-
-HARDE LIMIET: Maximum 3 politici mogen reageren. Geen 4, geen 5.
-
-Het gesprek moet eindigen met toenadering en perspectief op een compromis of oplossing. 
-Laat politici concrete vervolgstappen noemen of ruimte laten voor een gezamenlijke aanpak.
-
-WIE zou logisch reageren op de LAATSTE BERICHTEN hierboven? Denk na over:
-- Wie wordt getriggerd door wat er net gezegd is IN DE LAATSTE BERICHTEN?
-- Reageer op de INHOUD van wat er net gezegd is, niet op oude discussies
-- Laat het gesprek natuurlijk naar een conclusie vloeien.`
-      : `${conversationSummaryContext}${lastSpeakerContext}${speakerDistributionContext}
-
-## Fase: ${phase.toUpperCase()}
-${phaseInstructions[phase]}
-
-⚠️ GENEREER EXACT 2 OF 3 BEURTEN - ABSOLUUT NIET MEER! ⚠️
-
-Aantal beurten: 2 of 3 (kies één van deze twee getallen)
-Berichten per beurt: 1-3 berichten
-  - MEESTAL 1 bericht per politicus
-  - SOMS 2 berichten
-  - ZELDEN 3 berichten
-
-HARDE LIMIET: Maximum 3 politici mogen reageren in deze ronde.
-Als je 4 of 5 politici wilt laten reageren: STOP. Dat is te veel.
-
-WIE zou logisch reageren op de LAATSTE BERICHTEN hierboven? Overweeg:
-- Wie wordt getriggerd door wat er in de LAATSTE BERICHTEN gezegd is?
-- Reageer op de INHOUD van die specifieke berichten, niet op oude discussies
-- Zijn er rivalen die op elkaar zouden reageren?
-- Zijn er coalitiegenoten die elkaar zouden steunen?
-- Niet iedereen hoeft te spreken - focus op natuurlijke reacties.`;
+    const userPrompt = buildUserPrompt({
+      conversationContext: conversationSummaryContext,
+      lastSpeakerContext,
+      speakerDistributionContext,
+      phase,
+      phaseInstructions: phaseInstructions[phase],
+      isLastBatch,
+    });
 
     try {
       // Selecteer random model configuratie voor variatie
@@ -459,8 +459,7 @@ WIE zou logisch reageren op de LAATSTE BERICHTEN hierboven? Overweeg:
         rawResponse: JSON.stringify(response.object, null, 2),
       });
 
-      // Truncate naar max 3 turns - AI genereert vaak 4-5 turns ondanks instructies
-      const MAX_TURNS_TO_USE = 3;
+      // Truncate naar max turns - AI genereert vaak meer turns ondanks instructies
       const aiMessages =
         response.object.length > MAX_TURNS_TO_USE
           ? response.object.slice(0, MAX_TURNS_TO_USE)
