@@ -229,46 +229,6 @@ Contributions zijn welkom.
 4. Push naar de branch (`git push origin feature/new-feature`)
 5. Open een Pull Request
 
-### Development Guidelines
-- Gebruik TypeScript strict mode
-- Test gesprekken met verschillende partijcombinaties
-- Update documentatie bij API changes
-- Volg bestaande code conventions
-
-## Database Schema
-
-```sql
--- Conversations tabel
-CREATE TABLE user_conversations (
-  id TEXT PRIMARY KEY,
-  title TEXT,
-  onderwerp TEXT NOT NULL,
-  deelnemer_ids INTEGER[] NOT NULL,
-  berichten JSONB NOT NULL,
-  compromis TEXT,
-  created_at TIMESTAMP DEFAULT NOW(),
-  updated_at TIMESTAMP DEFAULT NOW()
-);
-```
-
-## Known Issues
-
-- Gesprek generatie kan traag zijn bij API rate limits
-- Zeer controversiële onderwerpen worden gefilterd door content moderatie
-
-## License
-
-MIT License - zie [LICENSE](LICENSE)
-
-## Built With
-
-- [Next.js](https://nextjs.org/) - React framework
-- [Vercel AI SDK](https://sdk.vercel.ai/) - AI streaming
-- [Google Gemini](https://ai.google.dev/) - Language model
-- [Drizzle ORM](https://orm.drizzle.team/) - Database toolkit
-- [shadcn/ui](https://ui.shadcn.com/) - UI componenten
-- [Tailwind CSS](https://tailwindcss.com/) - Styling
-
 ## Disclaimer
 
 Dit is een AI-simulatie voor entertainment doeleinden. Gesprekken zijn kunstmatig gegenereerd en geen voorspelling van echte formatiegesprekken. Standpunten zijn gebaseerd op verkiezingsprogramma's 2025, maar het taalgebruik en specifieke reacties zijn gegenereerd door AI.
