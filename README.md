@@ -7,18 +7,6 @@ AI-gestuurde simulatie van Nederlandse formatiegesprekken. Genereert dynamische 
 [![Vercel AI SDK](https://img.shields.io/badge/Vercel_AI_SDK-5.0-black)](https://sdk.vercel.ai/)
 [![Google Gemini](https://img.shields.io/badge/Google_Gemini-2.0-blue)](https://ai.google.dev/)
 
-## Features
-
-- **19 Nederlandse politieke partijen** met verkiezingsprogramma's 2025
-- **AI-gestuurde gesprekken** via Google Gemini 2.0 Flash met streaming responses
-- **Realtime chat interface** met typing indicators
-- **Geautomatiseerde compromis-generatie** op basis van partijstandpunten
-- **Variabele AI-parameters** per gesprek (temperature, frequency penalty)
-- **Content moderatie** voor NSFW en haatdragende content
-- **Evaluatie-tooling** voor analyse van gespreksuitkomsten
-- **Type-safe database layer** met Drizzle ORM
-- **Responsive UI** gebouwd met Tailwind CSS 4
-
 ## Setup
 
 ### Requirements
