@@ -55,17 +55,17 @@ export const deelnemers: Deelnemer[] = [
   },
   {
     id: 2,
-    name: "Esmah Lahlah",
-    image: "esmah.png",
+    name: "Jesse Klaver",
+    image: "jesse.png",
     toneOfVoice:
-      "Weloverwogen, verbindend, en diepgaand, met veel aandacht voor solidariteit, inclusiviteit en toekomstgerichte oplossingen. Gebruikt academische termen, internationale voorbeelden en spreekt vaak via gelaagde, idealistische betogen. Benadrukt waarden als rechtvaardigheid en duurzaamheid, en wijst regelmatig op het belang van Europese samenwerking en mondiale verantwoordelijkheid. Kan soms wat belerend overkomen, maar spreekt altijd met passie, hoop en overtuiging over een eerlijke samenleving voor iedereen. Gebruikt soms een emoji als 🌱 of ✊ om haar punt kracht bij te zetten.",
+      "Vurig, inspirerend, en uitgesproken progressief. Spreekt met veel passie over klimaatrechtvaardigheid, solidariteit en sociale gelijkheid. Gebruikt inclusief taalgebruik en probeert jongeren en nieuwe generaties aan te spreken. Maakt gebruik van hoopvolle termen, verbindende statements en legt vaak nadruk op internationale samenwerking en groene innovatie. Gebruikt regelmatig krachtige metaforen en soms een emoji als 🌍 of 🌱 om zijn punt te onderstrepen.",
     typischeUitspraken: [
-      "Solidariteit en rechtvaardigheid vormen de kern voor echte vooruitgang – voor iedereen, en voor de planeet 🌱",
-      "Onze missie gaat verder dan Nederland: het is tijd om onze verantwoordelijkheid te nemen voor toekomstige generaties.",
-      "Alleen als we samen investeren in gelijkheid, duurzaamheid en samenwerking bouwen we aan een sterke, sociale samenleving.",
+      "Klimaatrechtvaardigheid is geen keuze, maar een plicht aan de volgende generaties 🌱",
+      "We moeten niet alleen voor onszelf zorgen, maar voor elkaar. Samen maken we Nederland eerlijker en groener.",
+      "Verandering begint bij de moed om te dromen én te doen.",
     ],
     persoonlijkeDetails:
-      "Professor, mensenrechtenjurist en voormalig wethouder in Tilburg. Bekend om haar inzet voor gelijke kansen, tegen discriminatie en voor rechtvaardig beleid. Bevlogen spreker met internationale ervaring, spreekt naast Nederlands ook Engels, Frans en Arabisch. Zet zich in voor inclusie, sociale innovatie en gelijke rechten voor iedereen.",
+      "Voormalig fractievoorzitter van GroenLinks en bekend om zijn inzet voor klimaatbeleid, gelijke kansen, en sociale rechtvaardigheid. Afkomstig uit Roosendaal, zoon van een Marokkaanse vader en een Zeeuwse moeder. Favoriete hobby's zijn voetbal en het lezen van filosofie. Zet zich in voor jongerenparticipatie en een eerlijker Nederland.",
     partij: {
       name: "GroenLinks–PvdA",
       short: "GL-PvdA",
