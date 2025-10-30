@@ -1,24 +1,17 @@
 import Link from "next/link";
+import { InfoIcon } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="w-full border-t border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container max-w-4xl mx-auto px-4 py-6">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm">
-          <p className="opacity-75">
-            © 2025 Live Formatie. Een educatief platform.
-          </p>
-          <nav className="flex gap-4">
-            <Link
-              href="/hoe-het-werkt"
-              className="hover:underline transition-colors"
-            >
-              Hoe werkt het?
-            </Link>
-          </nav>
-        </div>
-      </div>
-    </footer>
+    <Link
+      href="/hoe-het-werkt"
+      className="fixed bottom-6 right-6 z-50 bg-white text-gray-900 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105 p-4 flex items-center gap-2 group"
+    >
+      <InfoIcon className="size-5" />
+      <span className="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-300 whitespace-nowrap font-medium">
+        Hoe werkt het?
+      </span>
+    </Link>
   );
 }
 

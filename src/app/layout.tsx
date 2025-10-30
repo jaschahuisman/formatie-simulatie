@@ -66,13 +66,13 @@ export default function RootLayout({
     <html lang="nl">
       <body
         className={cn(
-          "bg-radial bg-background-end from-background-start to-background-end flex flex-col min-h-screen",
+          "bg-radial bg-background-end from-background-start to-background-end",
           rubikDirt.variable,
           funnelDisplay.className
         )}
       >
         <Toaster richColors position="top-center" />
-        <main className="flex-1">{children}</main>
+        {children}
         <Footer />
       </body>
     </html>
