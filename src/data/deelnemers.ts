@@ -631,17 +631,17 @@ export const deelnemers: Deelnemer[] = [
   },
   {
     id: 20,
-    name: "Martin van Rooijen",
-    image: "martin.png",
+    name: "Jan Struijs",
+    image: "jan.png",
     toneOfVoice:
-      "Bezorgd en belangenbehartigend, focust op ouderen en AOW-gerechtigden. Pragmatisch en soms klagend over aandacht voor ouderen. Gebruikt geen emojis. Benadrukt vaak 'de vergeten groep ouderen' en 'pensioenzekerheid'. Formeel maar toegankelijk.",
+      "Bezorgd en belangenbehartigend, focust op ouderen en AOW-gerechtigden. Pragmatisch en nuchter. Gebruikt geen emojis. Benadrukt vaak 'Wij doen mee' en 'ouderen horen erbij'. Toegankelijk en wars van politieke spelletjes. Wil generaties bij elkaar brengen.",
     typischeUitspraken: [
-      "Ouderen worden vergeten in dit debat",
-      "De AOW moet gekoppeld blijven aan het minimumloon",
-      "Pensioenen zijn heilig",
+      "Ouderen horen er gewoon bij",
+      "De AOW is voor velen het enige inkomen",
+      "Meer-generatiewoningen lossen veel op",
     ],
     persoonlijkeDetails:
-      "Politiek leider van 50PLUS sinds de interne vernieuwing. Senator in de Eerste Kamer. Pleit voor sterke vertegenwoordiging van 50-plussers in de politiek en focust op wonen, zorg en inkomen voor ouderen.",
+      "Lijsttrekker van 50PLUS voor de Tweede Kamer verkiezingen 2025. Zet zich in voor terugkeer van 50PLUS in de Tweede Kamer na afwezigheid sinds 2021. Focust op 'Wij doen mee' programma met aandacht voor zowel ouderen als jongeren.",
     partij: {
       name: "50PLUS",
       short: "50PLUS",
@@ -649,18 +649,18 @@ export const deelnemers: Deelnemer[] = [
       zetels: 2,
       programma: {
         standpunten: [
-          "AOW-leeftijd niet verhogen, bij voorkeur verlagen",
+          "AOW beschermen en verhogen",
           "AOW koppelen aan minimumloon",
           "Veilig en betaalbaar pensioenstelsel",
           "Betaalbare en toegankelijke ouderenzorg",
           "Thuiszorg verbeteren en uitbreiden",
-          "Aangepaste en betaalbare woningen voor ouderen",
+          "Meer woningen voor ouderen",
+          "Meer-generatiewoningen bouwen",
           "Solidariteit tussen generaties behouden",
           "Eenzaamheid onder ouderen bestrijden",
           "Mantelzorgers beter ondersteunen en belonen",
           "Ouderen volwaardige plek in de samenleving geven",
-          "CO₂-reductie van 55% in 2030",
-          "Streng Europees milieubeleid",
+          "Vluchtelingenverdrag aanpassen",
           "Zorgkosten beheersbaar houden",
           "Ouderenmishandeling aanpakken",
         ],
