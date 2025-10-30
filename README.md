@@ -1,80 +1,57 @@
-# 🏛️ Live Formatie
+# Live Formatie
 
-> **Laat Nederlandse politici met elkaar in discussie gaan en ontdek waar ze het (on)eens over worden.**
-
-Live Formatie is een AI-gestuurde simulatie van Nederlandse formatiegesprekken. Kies je coalitie, gooi er een onderwerp in, en kijk hoe partijleiders als Wilders, Timmermans en anderen met elkaar in debat gaan - compleet met hun échte standpunten en typische uitspraken. 
+AI-gestuurde simulatie van Nederlandse formatiegesprekken. Genereert dynamische politieke discussies op basis van verkiezingsprogramma's 2025, met realistische standpunten en conversatie-stijlen per politicus. 
 
 [![Next.js](https://img.shields.io/badge/Next.js-16.0-black)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue)](https://www.typescriptlang.org/)
 [![Vercel AI SDK](https://img.shields.io/badge/Vercel_AI_SDK-5.0-black)](https://sdk.vercel.ai/)
 [![Google Gemini](https://img.shields.io/badge/Google_Gemini-2.0-blue)](https://ai.google.dev/)
 
-## ✨ Features
+## Features
 
-- 🗳️ **19 Nederlandse politieke partijen** - Van PVV tot Volt, up to date met de verkiezingsprogramma's 2025
-- 🤖 **AI-gestuurde gesprekken** - Google Gemini 2.0 Flash genereert dynamische discussies
-- 💬 **WhatsApp-stijl chat** - Korte berichten, emoji's en realtime typing indicators
-- 🎯 **Slimme compromissen** - AI bedenkt concrete voorstellen op basis van de standpunten
-- 🎲 **Unieke gesprekken** - Variabele temperature/frequency penalty zorgt voor variatie
-- 🛡️ **Content moderatie** - Automatische filtering van NSFW en haatdragende content
-- 📊 **Evaluatie-systeem** - Scripts om gespreksuitkomsten te analyseren
-- 📱 **Responsive design** - Werkt perfect op mobiel en desktop
-- 🎨 **Speelse UI** - Kleurrijke ornamenten en partijleider-illustraties
+- **19 Nederlandse politieke partijen** met verkiezingsprogramma's 2025
+- **AI-gestuurde gesprekken** via Google Gemini 2.0 Flash met streaming responses
+- **Realtime chat interface** met typing indicators
+- **Geautomatiseerde compromis-generatie** op basis van partijstandpunten
+- **Variabele AI-parameters** per gesprek (temperature, frequency penalty)
+- **Content moderatie** voor NSFW en haatdragende content
+- **Evaluatie-tooling** voor analyse van gespreksuitkomsten
+- **Type-safe database layer** met Drizzle ORM
+- **Responsive UI** gebouwd met Tailwind CSS 4
 
-## 🚀 Aan de slag
+## Setup
 
-### Vereisten
+### Requirements
 
-- **Node.js** 20.x of hoger
-- **Yarn** 1.22.x (of npm/pnpm)
-- **PostgreSQL** database
-- **Google AI API key** (Gemini 2.0)
+- Node.js 20.x+
+- Yarn 1.22.x (of npm/pnpm)
+- PostgreSQL database
+- Google AI API key (Gemini 2.0)
 
-### Installatie
+### Installation
 
-1. **Clone de repository**
 ```bash
+# Clone repository
 git clone https://github.com/jaschahuisman/formatie-simulatie.git
 cd formatie-simulatie
-```
 
-2. **Installeer dependencies**
-```bash
+# Install dependencies
 yarn install
-```
 
-3. **Maak een `.env.local` bestand**
-```env
-# Database
-DATABASE_URL="postgresql://user:password@localhost:5432/formatie"
+# Configure environment
+cp .env.example .env.local
+# Edit .env.local met je DATABASE_URL en GOOGLE_GENERATIVE_AI_API_KEY
 
-# Google AI
-GOOGLE_GENERATIVE_AI_API_KEY="jouw-api-key-hier"
+# Setup database
+yarn db:push  # of yarn db:migrate voor productie
 
-# Next.js
-NODE_ENV="development"
-```
-
-4. **Setup database**
-```bash
-# Genereer migraties
-yarn db:generate
-
-# Run migraties
-yarn db:migrate
-
-# Of push direct naar database (development)
-yarn db:push
-```
-
-5. **Start development server**
-```bash
+# Start development server
 yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) en maak je eerste formatiegesprek! 🎉
+Open [http://localhost:3000](http://localhost:3000)
 
-## 📁 Project structuur
+## Project Structure
 
 ```
 formatie-simulatie/
@@ -110,7 +87,7 @@ formatie-simulatie/
 └── evaluation-results/           # Evaluatie resultaten
 ```
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 ### Frontend
 - **Next.js 16** - React framework met App Router
@@ -132,69 +109,72 @@ formatie-simulatie/
 - **tsx** - TypeScript execution
 - **Vercel Analytics** - Analytics
 
-## 💬 Hoe werkt de AI?
+## Architecture
 
-### 1. Gesprek genereren
-De AI krijgt een gestructureerde prompt met:
-- ✅ Verkiezingsprogramma's van geselecteerde partijen
-- ✅ Tone of voice per politicus
-- ✅ Typische uitspraken en persoonlijke details
-- ✅ Aantal zetels (machtsbalans)
-- ✅ Realistische Kamer-acties (moties, wetten, begrotingen)
+### Conversation Generation
 
-### 2. Streaming responses
-Met de Vercel AI SDK worden berichten real-time gestreamed, inclusief:
-- 💬 **Tekst** - Wat de politicus zegt
-- 🎭 **Sender** - Wie spreekt
-- 💭 **Reasoning** - Waarom dit standpunt wordt ingenomen
+De AI prompt wordt opgebouwd met:
+- Verkiezingsprogramma's van geselecteerde partijen
+- Tone of voice en typische uitspraken per politicus
+- Partijgrootte (zetels) voor machtsbalans
+- Realistische Kamer-acties (moties, wetten, begrotingen)
 
-### 3. Compromis
-Na ~22 berichten genereert de AI een compromis-voorstel met:
-- 📝 Concrete acties die alle partijen kunnen steunen
-- ⚖️ Balans tussen verschillende standpunten
-- 🎯 Realistische Kamer-procedures
+### Streaming Implementation
 
-### 4. Content moderatie
-Elk onderwerp wordt eerst gescreend op:
-- 🚫 NSFW content
-- 🚫 Haatspraak
-- 🚫 Discriminatie
-- ✅ Controversiële politieke onderwerpen zijn toegestaan
+Vercel AI SDK streamt responses met structured output:
+```typescript
+{
+  message: string,      // Bericht tekst
+  sender: number,       // Deelnemer ID
+  reasoning: string     // Intern redenering voor standpunt
+}
+```
 
-## 📊 Scripts
+### Compromise Generation
 
-### Development
+Na ongeveer 22 berichten wordt een compromis-voorstel gegenereerd op basis van:
+- Gemeenschappelijke standpunten
+- Realistische concessies per partij
+- Concrete Kamer-procedures
+
+### Content Moderation
+
+Pre-flight check voor elk onderwerp:
+- NSFW content detection
+- Haatspraak filtering
+- Discriminatie check
+- Controversiële politieke onderwerpen zijn toegestaan
+
+## Available Scripts
+
 ```bash
+# Development
 yarn dev          # Start development server
 yarn build        # Build voor productie
 yarn start        # Start productie server
 yarn lint         # Run ESLint
-```
 
-### Database
-```bash
+# Database
 yarn db:generate  # Genereer migraties uit schema
 yarn db:migrate   # Run migraties
 yarn db:push      # Push schema direct naar DB (dev)
 yarn db:studio    # Open Drizzle Studio (GUI)
-```
 
-### Evaluatie
-```bash
+# Evaluation
 yarn evaluate     # Analyseer gespreksuitkomsten
 ```
 
-Het evaluatie-script genereert een JSON-rapport met:
+### Evaluation Output
+
+Het evaluatie-script genereert JSON-rapporten in `evaluation-results/` met:
 - Aantal gesprekken per partijcombinatie
 - Gemiddelde berichtenlengte
 - Compromis-statistieken
 - Timestamp per evaluatie
 
-Resultaten worden opgeslagen in `evaluation-results/`.
+## Adding Political Parties
 
-## 🎨 Partijen toevoegen
-
-Wil je een partij toevoegen? Edit `src/data/deelnemers.ts`:
+Edit `src/data/deelnemers.ts` om een partij toe te voegen:
 
 ```typescript
 {
@@ -220,10 +200,11 @@ Wil je een partij toevoegen? Edit `src/data/deelnemers.ts`:
 }
 ```
 
-## 🔧 Configuratie
+## Configuration
 
 ### AI Parameters
-Pas in `src/lib/ai/index.ts` aan:
+
+`src/lib/ai/index.ts`:
 ```typescript
 temperature: 0.8        // Creativiteit (0-2)
 maxTokens: 4000        // Max tokens per response
@@ -231,29 +212,30 @@ topP: 0.95             // Nucleus sampling
 frequencyPenalty: 0.5  // Herhaling voorkomen
 ```
 
-### Gesprek Lengte
-In `src/lib/live-formatie/genereer-gesprek-berichten.ts`:
+### Conversation Length
+
+`src/lib/live-formatie/genereer-gesprek-berichten.ts`:
 ```typescript
 const AANTAL_BERICHTEN = 22  // Standaard aantal berichten
 ```
 
-## 🤝 Bijdragen
+## Contributing
 
-Contributions zijn welkom! 🎉
+Contributions zijn welkom.
 
 1. Fork het project
-2. Maak een feature branch (`git checkout -b feature/vette-feature`)
-3. Commit je changes (`git commit -m 'Add vette feature'`)
-4. Push naar de branch (`git push origin feature/vette-feature`)
+2. Maak een feature branch (`git checkout -b feature/new-feature`)
+3. Commit je changes (`git commit -m 'Add new feature'`)
+4. Push naar de branch (`git push origin feature/new-feature`)
 5. Open een Pull Request
 
-### Development Tips
-- 📝 Gebruik TypeScript voor type safety
-- 🧪 Test je gesprekken met verschillende partijcombinaties
-- 🎨 Houd de UI speels maar toegankelijk
-- 📚 Update de documentatie bij nieuwe features
+### Development Guidelines
+- Gebruik TypeScript strict mode
+- Test gesprekken met verschillende partijcombinaties
+- Update documentatie bij API changes
+- Volg bestaande code conventions
 
-## 📝 Database Schema
+## Database Schema
 
 ```sql
 -- Conversations tabel
@@ -269,18 +251,17 @@ CREATE TABLE user_conversations (
 );
 ```
 
-## 🐛 Bekende Issues
+## Known Issues
 
-- ⚠️ Gesprekken kunnen soms langer duren dan verwacht (afhankelijk van API)
-- ⚠️ Zeer controversiële onderwerpen kunnen worden geblokkeerd door content filter
+- Gesprek generatie kan traag zijn bij API rate limits
+- Zeer controversiële onderwerpen worden gefilterd door content moderatie
 
-## 📄 Licentie
+## License
 
-Dit project is open source en beschikbaar onder de [MIT License](LICENSE).
+MIT License - zie [LICENSE](LICENSE)
 
-## 🙏 Credits
+## Built With
 
-Gebouwd met:
 - [Next.js](https://nextjs.org/) - React framework
 - [Vercel AI SDK](https://sdk.vercel.ai/) - AI streaming
 - [Google Gemini](https://ai.google.dev/) - Language model
@@ -288,16 +269,6 @@ Gebouwd met:
 - [shadcn/ui](https://ui.shadcn.com/) - UI componenten
 - [Tailwind CSS](https://tailwindcss.com/) - Styling
 
-## 💡 Disclaimer
+## Disclaimer
 
-Live Formatie is een **AI-simulatie** bedoeld als **entertainment met een serieuze ondertoon**. De gesprekken zijn kunstmatig gegenereerd en geen voorspelling van echte formatiegesprekken. Standpunten zijn gebaseerd op échte verkiezingsprogramma's, maar het taalgebruik en specifieke reacties zijn niet authentiek. 
-
-**Gebruik dit niet als politiek advies** - stem op basis van échte informatie! 🗳️
-
----
-
-Gemaakt met ❤️ voor transparantere politiek
-
-**Questions?** Open een issue of start een discussie!
-
-🔗 [Live Demo](https://formatie-simulatie.vercel.app) | 📖 [Documentation](docs/) | 🐦 [Twitter](https://twitter.com)
+Dit is een AI-simulatie voor entertainment doeleinden. Gesprekken zijn kunstmatig gegenereerd en geen voorspelling van echte formatiegesprekken. Standpunten zijn gebaseerd op verkiezingsprogramma's 2025, maar het taalgebruik en specifieke reacties zijn gegenereerd door AI.
