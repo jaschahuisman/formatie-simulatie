@@ -1,9 +1,18 @@
-import { generateText } from "ai";
+import { generateText, generateObject } from "ai";
+import { z } from "zod";
 import { model } from "@/lib/ai";
 import { createLogger } from "@/lib/logger";
 
 const MAX_ONDERWERP_LENGTH = 100;
 const logger = createLogger("genereer-titel");
+
+/**
+ * Schema voor content safety check
+ */
+const contentSafetySchema = z.object({
+  safe: z.boolean().describe("Of de input gepast is om over te discussiëren"),
+  reason: z.string().optional().describe("Reden waarom de input ongepast is (alleen bij safe=false)"),
+});
 
 /**
  * Check of de input gepast is om over te discussiëren
@@ -19,8 +28,9 @@ export async function checkContentSafety(onderwerp: string): Promise<{
   });
 
   try {
-    const { text } = await generateText({
+    const { object } = await generateObject({
       model,
+      schema: contentSafetySchema,
       prompt: `Je bent een content moderator. Beoordeel of deze input gepast is om over te discussiëren.
 
 Input:
@@ -37,19 +47,14 @@ LET OP:
 - Politieke standpunten, ook extreme, zijn SAFE zolang ze niet haatdragend zijn
 - Het hoeft geen "serieus politiek onderwerp" te zijn - ook ludieke onderwerpen zijn toegestaan
 
-Geef ALLEEN één van deze twee antwoorden:
-1. "SAFE" - als de input gepast is om over te discussiëren
-2. "UNSAFE: [reden]" - als de input ongepast is (korte uitleg)
-
-Antwoord:`,
+Geef een structured response met:
+- safe: true als de input gepast is, false als ongepast
+- reason: alleen invullen als safe=false, geef dan een korte uitleg waarom het geblokkeerd wordt`,
     });
 
-    const response = text.trim();
-
-    if (response.startsWith("UNSAFE:")) {
-      const reason = response.replace("UNSAFE:", "").trim();
-      logger.warn("Content deemed unsafe", { reason });
-      return { safe: false, reason };
+    if (!object.safe) {
+      logger.warn("Content deemed unsafe", { reason: object.reason });
+      return { safe: false, reason: object.reason };
     }
 
     logger.info("Content is safe");
