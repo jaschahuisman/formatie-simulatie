@@ -27,12 +27,12 @@ type Props = {
   showCompromis?: boolean;
 };
 
-// Generate a deterministic typing delay (4-10 seconds) for each message based on its ID
+// Generate a deterministic typing delay (2.9-7.1 seconds) for each message based on its ID
 function getTypingDelay(messageId: number): number {
-  // Use message ID to seed a pseudo-random delay between 4000-10000ms
+  // Use message ID to seed a pseudo-random delay between 2857-7143ms (1.4x faster)
   const seed = messageId * 9301 + 49297; // Simple LCG constants
   const random = (seed % 233280) / 233280; // Normalize to 0-1
-  return 4000 + Math.floor(random * 6000); // 4-10 seconds
+  return 2857 + Math.floor(random * 4286); // 2.9-7.1 seconds
 }
 
 export function Gesprek({
