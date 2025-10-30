@@ -78,9 +78,9 @@ export default function HoeHetWerktPage() {
               </h3>
               <p className="text-muted-foreground">
                 Kies waar de politici het over moeten hebben. Van klimaat en
-                migratie tot zorg en woningbouw - alle actuele thema's zijn
-                mogelijk. Ons systeem controleert automatisch of het onderwerp
-                geschikt is voor een serieus politiek gesprek.
+                migratie tot de prijs van frikandelbroodjes - alle onderwerpen
+                zijn mogelijk. Ons systeem controleert automatisch of het onderwerp
+                gepast is (geen NSFW, haatspraak of discriminatie).
               </p>
             </div>
 
@@ -170,11 +170,16 @@ export default function HoeHetWerktPage() {
               <h3 className="text-xl md:text-2xl font-semibold mb-3 text-foreground">
                 Content moderatie
               </h3>
-              <p>
-                We controleren alle input op geschiktheid voor een politiek
-                gesprek. NSFW content, haatdragende uitspraken en spam worden
-                automatisch geblokkeerd. Gebruikers krijgen direct feedback over
-                waarom bepaalde onderwerpen niet toegestaan zijn.
+              <p className="mb-3">
+                We controleren alle input op gepastheid. Dit is een zwart-wit
+                check: NSFW content, haatspraak en discriminatie worden geblokkeerd.
+                Gebruikers krijgen direct feedback met de reden.
+              </p>
+              <p className="text-sm">
+                <strong>Belangrijk:</strong> Controversiële maar legitieme politieke
+                standpunten zijn toegestaan. Ook ludieke onderwerpen (zoals de prijs
+                van frikandelbroodjes) kunnen prima. Het hoeft niet per se een
+                "serieus politiek onderwerp" te zijn.
               </p>
             </div>
           </div>

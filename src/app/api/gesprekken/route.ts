@@ -81,8 +81,8 @@ export async function POST(request: NextRequest) {
         await sendEvent({
           type: "error",
           message: safetyCheck.reason
-            ? `Dit onderwerp wordt niet ondersteund: ${safetyCheck.reason}`
-            : "Dit onderwerp wordt niet ondersteund. Kies een ander onderwerp voor het formatiegesprek.",
+            ? `Dit onderwerp is niet gepast: ${safetyCheck.reason}`
+            : "Dit onderwerp is niet gepast voor een discussie. Kies een ander onderwerp.",
         });
         await writer.close();
         return;
