@@ -267,6 +267,36 @@ function buildKamerBevoegdhedenSection(): string {
 }
 
 /**
+ * Build time context section with current date and days since election
+ */
+function buildTimeContextSection(): string {
+  const electionDate = new Date("2025-10-29");
+  const today = new Date();
+  
+  // Calculate days since election
+  const diffTime = today.getTime() - electionDate.getTime();
+  const daysSinceElection = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  
+  // Format current date
+  const options: Intl.DateTimeFormatOptions = { 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric',
+    weekday: 'long'
+  };
+  const formattedDate = today.toLocaleDateString('nl-NL', options);
+  
+  return `
+    
+    # Tijdscontext
+    - Vandaag: ${formattedDate}
+    - Verkiezingen: 29 oktober 2025
+    - Dagen sinds verkiezingen: ${daysSinceElection} dagen
+    
+    Dit is relevant voor de context en urgentie van de onderhandelingen.`;
+}
+
+/**
  * Build user prompt for the AI
  */
 function buildUserPrompt(options: {
@@ -377,6 +407,7 @@ const buildSystemMessage = (opties: {
 
   return (
     buildRoleSection(opties.onderwerp) +
+    buildTimeContextSection() +
     buildDeelemersSection(sortedDeelnemers) +
     buildZetelverdeling(sortedDeelnemers) +
     buildChatStyleSection() +
