@@ -193,7 +193,7 @@ export function Gesprek({
             {isLive && (
               <Button onClick={handleFastForward} variant="outline" size="sm">
                 <FastForwardIcon className="size-4 mr-1" />
-                Doorspoelen
+                Bekijk compromis
               </Button>
             )}
           </div>
