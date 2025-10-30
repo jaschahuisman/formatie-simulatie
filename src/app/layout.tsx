@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Averia_Libre, Rubik_Dirt } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { Toaster } from "sonner";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL!;
 
@@ -69,6 +70,7 @@ export default function RootLayout({
           funnelDisplay.className
         )}
       >
+        <Toaster richColors position="top-center" />
         {children}
       </body>
     </html>

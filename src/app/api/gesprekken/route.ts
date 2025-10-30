@@ -80,8 +80,9 @@ export async function POST(request: NextRequest) {
       if (!safetyCheck.safe) {
         await sendEvent({
           type: "error",
-          message:
-            "Dit onderwerp wordt niet ondersteund. Kies een ander onderwerp voor het formatiegesprek.",
+          message: safetyCheck.reason
+            ? `Dit onderwerp wordt niet ondersteund: ${safetyCheck.reason}`
+            : "Dit onderwerp wordt niet ondersteund. Kies een ander onderwerp voor het formatiegesprek.",
         });
         await writer.close();
         return;

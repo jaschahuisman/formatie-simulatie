@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { FunFactCard } from "@/components/fun-fact-card";
+import { toast } from "sonner";
 
 type Props = {
   deelnemers: Deelnemer[];
@@ -133,14 +134,22 @@ export function ConversationDialog({ deelnemers }: Props) {
               router.push(`/gesprek/${data.gesprekId}`);
               return;
             } else if (data.type === "error") {
-              throw new Error(data.message);
+              // Show toast with error message
+              toast.error(data.message || "Er is een fout opgetreden");
+              setIsGenerating(false);
+              setProgress({ percentage: 0, message: "" });
+              return;
             }
           }
         }
       }
     } catch (error) {
       console.error("Error creating conversation:", error);
-      alert("Er is iets misgegaan. Probeer het opnieuw.");
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Er is iets misgegaan. Probeer het opnieuw."
+      );
       setIsGenerating(false);
       setProgress({ percentage: 0, message: "" });
     }
