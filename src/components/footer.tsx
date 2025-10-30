@@ -27,16 +27,16 @@ export function Footer() {
       {/* LinkedIn links - links */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="fixed bottom-4 left-4 md:bottom-6 md:left-6 z-50 bg-white text-gray-900 rounded-full shadow-lg hover:shadow-xl transition-all md:hover:scale-105 group overflow-hidden"
+        className="fixed bottom-4 left-4 md:bottom-6 md:left-6 z-50 bg-white text-gray-900 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105 group overflow-hidden p-0 border-0"
       >
-        <div className="flex items-center h-12 md:h-14">
+        <div className="flex items-center h-12 md:h-14 group-hover:pr-6">
           <div className="w-12 h-12 md:w-14 md:h-14 flex items-center justify-center shrink-0">
             <Linkedin className="size-4 md:size-5" />
           </div>
           <div
             className={`${
-              isExpanded ? "max-w-xs pr-4" : "max-w-0"
-            } md:max-w-0 md:pr-0 overflow-hidden md:group-hover:max-w-xs transition-all duration-300 whitespace-nowrap flex items-center gap-2 md:group-hover:pr-6`}
+              isExpanded ? "max-w-xs" : "max-w-0"
+            } md:max-w-0 overflow-hidden md:group-hover:max-w-xs transition-all duration-300 whitespace-nowrap flex items-center gap-2`}
           >
             <span className="text-xs md:text-sm font-medium text-gray-600">Made by:</span>
             <a
