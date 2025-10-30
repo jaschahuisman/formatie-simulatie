@@ -26,32 +26,32 @@ export default function HoeHetWerktPage() {
           </h1>
 
           <p className="text-lg md:text-xl">
-            Live Formatie simuleert realistische politieke gesprekken tussen
-            Nederlandse partijleiders. Ontdek hoe onze AI-technologie werkt en
-            wat je kunt leren over formaties.
+            Laat Nederlandse politici met elkaar in discussie gaan over elk
+            onderwerp dat je wilt. Kies je coalitie en ontdek waar ze ruzie
+            over maken en waar ze het (misschien) eens worden.
           </p>
         </div>
 
         <section>
-          <h2 className="font-comic text-3xl mb-4">🎯 Wat is Live Formatie?</h2>
+          <h2 className="font-comic text-3xl mb-4">🎯 Wat is dit precies?</h2>
           <div className="space-y-4">
             <p>
-              Live Formatie is een educatief platform dat je laat zien hoe
-              Nederlandse politieke partijen met elkaar in gesprek gaan. Door
-              AI-technologie kunnen we realistische gesprekken simuleren waarin
-              partijleiders hun standpunten verdedigen, naar elkaar luisteren, en
-              op zoek gaan naar compromissen.
+              Live Formatie laat je zien hoe politieke partijen met elkaar
+              discussiëren. Kies een coalitie, gooi er een onderwerp in, en kijk
+              hoe Wilders, Timmermans en de rest van de club reageren op elkaar.
             </p>
             <p>
-              Het doel? Democratie begrijpelijker maken en inzicht geven in hoe
-              complexe onderhandelingen in de Tweede Kamer verlopen.
+              Het is entertainment met een serieuze ondertoon: je ziet de echte
+              standpunten van partijen, hoe ze met elkaar omgaan, en waar de
+              verschillen (of juist overeenkomsten) zitten. Geen garantie dat
+              het zo in echt zou gaan, maar wel vermakelijk én informatief.
             </p>
           </div>
         </section>
 
         <section>
           <h2 className="font-comic text-3xl mb-6">
-            🔧 Hoe werkt de simulatie?
+            🔧 Zo doe je het
           </h2>
 
           <div className="space-y-6">
@@ -60,12 +60,12 @@ export default function HoeHetWerktPage() {
                 <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold shrink-0">
                   1
                 </span>
-                Kies je coalitie
+                Stel je coalitie samen
               </h3>
               <p>
-                Selecteer minimaal 2 politieke partijen die met elkaar in
-                gesprek moeten. Je ziet direct hoeveel Tweede Kamerzetels je
-                coalitie heeft en of je een meerderheid (76+ zetels) bereikt.
+                Kies minimaal 2 partijen die met elkaar in discussie gaan.
+                Je ziet meteen hoeveel zetels je coalitie heeft en of dat
+                genoeg is voor een meerderheid (76+ zetels).
               </p>
             </div>
 
@@ -74,13 +74,12 @@ export default function HoeHetWerktPage() {
                 <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold shrink-0">
                   2
                 </span>
-                Bepaal het onderwerp
+                Gooi er een onderwerp in
               </h3>
               <p>
-                Kies waar de politici het over moeten hebben. Van klimaat en
-                migratie tot de prijs van frikandelbroodjes - alle onderwerpen
-                zijn mogelijk. Ons systeem controleert automatisch of het onderwerp
-                gepast is (geen NSFW, haatspraak of discriminatie).
+                Klimaat? Migratie? De prijs van frikandelbroodjes? Maakt niet
+                uit - zolang het geen haatspraak of NSFW is, mag alles. Kies
+                waar de politici over moeten discussiëren.
               </p>
             </div>
 
@@ -89,28 +88,28 @@ export default function HoeHetWerktPage() {
                 <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold shrink-0">
                   3
                 </span>
-                AI genereert het gesprek
+                Het gesprek ontstaat
               </h3>
               <p className="mb-3">
-                Onze AI-technologie genereert een realistisch gesprek van ~22
-                berichten over 5 minuten. Elke politicus reageert op basis van:
+                We genereren een gesprek van ongeveer 22 berichten. Elke politicus
+                reageert op basis van hun echte standpunten en persoonlijkheid:
               </p>
               <ul className="space-y-2 text-sm">
                 <li className="flex gap-2">
                   <span className="shrink-0">•</span>
-                  <span><strong>Actuele standpunten</strong> - Gebaseerd op verkiezingsprogramma's 2025</span>
+                  <span>Hun <strong>verkiezingsprogramma 2025</strong></span>
                 </li>
                 <li className="flex gap-2">
                   <span className="shrink-0">•</span>
-                  <span><strong>Persoonlijkheid</strong> - Tone of voice, typische uitspraken en communicatiestijl</span>
+                  <span>Hun <strong>typische manier van praten</strong> (inclusief emoji's bij jongere politici)</span>
                 </li>
                 <li className="flex gap-2">
                   <span className="shrink-0">•</span>
-                  <span><strong>Zetelverdeling</strong> - Machtsposities en coalitiekansen</span>
+                  <span>Hoeveel <strong>zetels</strong> ze hebben (macht in onderhandelingen)</span>
                 </li>
                 <li className="flex gap-2">
                   <span className="shrink-0">•</span>
-                  <span><strong>Parlementaire instrumenten</strong> - Moties, hoorzittingen, begrotingswijzigingen</span>
+                  <span>Wat ze <strong>écht kunnen doen</strong> in de Tweede Kamer (moties, wetten, begrotingen)</span>
                 </li>
               </ul>
             </div>
@@ -120,13 +119,13 @@ export default function HoeHetWerktPage() {
                 <span className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold shrink-0">
                   4
                 </span>
-                Bekijk het resultaat
+                Lees het resultaat
               </h3>
               <p>
-                Het gesprek verloopt in chat-stijl met korte, snelle berichten.
-                Politici sturen 1-3 berichten per beurt, compleet met emoji's
-                (vooral jongere politici) en typische uitspraken. Aan het einde
-                krijg je een compromis-voorstel met concrete stappen.
+                Het gesprek verloopt als een WhatsApp-groepschat: korte berichten,
+                emoji's hier en daar, en politici die op elkaar reageren. Aan
+                het einde krijg je een compromis-voorstel (als ze het tenminste
+                met elkaar eens kunnen worden).
               </p>
             </div>
           </div>
@@ -136,93 +135,100 @@ export default function HoeHetWerktPage() {
           <h2 className="font-comic text-3xl mb-4">🤖 De technologie</h2>
           <div className="space-y-6">
             <p>
-              Live Formatie gebruikt geavanceerde AI-modellen (Google Gemini 2.0
-              Flash) om realistische gesprekken te genereren. We variëren tussen
-              verschillende model-configuraties om elk gesprek uniek te maken.
+              We gebruiken Google Gemini 2.0 om de gesprekken te genereren.
+              Elke discussie wordt vers gemaakt, met variërende instellingen
+              zodat geen twee gesprekken hetzelfde zijn.
             </p>
 
             <div>
               <h3 className="text-xl md:text-2xl font-semibold mb-3">
-                Realistische politieke dynamiek
+                Wat het realistisch maakt
               </h3>
-              <p className="mb-3">Het systeem houdt rekening met:</p>
               <ul className="space-y-2 text-sm">
                 <li className="flex gap-2">
-                  <span className="shrink-0">•</span>
-                  <span><strong>Politieke verhoudingen</strong> - Wie zijn natuurlijke bondgenoten of rivalen?</span>
+                  <span className="shrink-0">✅</span>
+                  <span><strong>Echte verkiezingsprogramma's</strong> - Standpunten komen uit de programma's van 2025</span>
                 </li>
                 <li className="flex gap-2">
-                  <span className="shrink-0">•</span>
-                  <span><strong>Reactieve flow</strong> - Politici reageren logisch op elkaar, niet op oude context</span>
+                  <span className="shrink-0">✅</span>
+                  <span><strong>Typische uitdrukkingen</strong> - Elke politicus praat zoals ze écht praten</span>
                 </li>
                 <li className="flex gap-2">
-                  <span className="shrink-0">•</span>
-                  <span><strong>Sprekersverdeling</strong> - Iedereen komt aan bod, geen pingpong tussen twee personen</span>
+                  <span className="shrink-0">✅</span>
+                  <span><strong>Realistische acties</strong> - Geen vage "in gesprek gaan", maar concrete moties en wetten</span>
                 </li>
                 <li className="flex gap-2">
-                  <span className="shrink-0">•</span>
-                  <span><strong>Machtsbalans</strong> - Grote partijen kunnen hun mandaat benadrukken, kleine partijen hun unieke positie</span>
+                  <span className="shrink-0">✅</span>
+                  <span><strong>Machtsbalans</strong> - Partijen met meer zetels hebben meer invloed</span>
+                </li>
+                <li className="flex gap-2">
+                  <span className="shrink-0">✅</span>
+                  <span><strong>Dynamische discussies</strong> - Ze reageren op elkaar, niet op een script</span>
                 </li>
               </ul>
             </div>
 
             <div>
               <h3 className="text-xl md:text-2xl font-semibold mb-3">
-                Content moderatie
+                Content check
               </h3>
               <p className="mb-3">
-                We controleren alle input op gepastheid. Dit is een zwart-wit
-                check: NSFW content, haatspraak en discriminatie worden geblokkeerd.
-                Gebruikers krijgen direct feedback met de reden.
+                Elk onderwerp wordt gecheckt op gepastheid. NSFW, haatspraak en
+                discriminatie worden geblokkeerd. Je krijgt meteen te horen
+                waarom als iets niet door de check komt.
               </p>
               <p className="text-sm">
-                <strong>Belangrijk:</strong> Controversiële maar legitieme politieke
-                standpunten zijn toegestaan. Ook ludieke onderwerpen (zoals de prijs
-                van frikandelbroodjes) kunnen prima. Het hoeft niet per se een
-                "serieus politiek onderwerp" te zijn.
+                <strong>Let op:</strong> Controversiële politieke standpunten zijn
+                gewoon toegestaan. Ook ludieke onderwerpen (prijs van frikandelbroodjes,
+                anyone?) zijn prima. Het hoeft echt niet per se een "serieus
+                politiek onderwerp" te zijn.
               </p>
             </div>
+
+            <p className="text-sm">
+              <strong>Voor de nerds:</strong> Next.js 15, Vercel AI SDK voor streaming,
+              Drizzle ORM, en variabele temperature/frequency penalty per gesprek.
+            </p>
           </div>
         </section>
 
         <section>
           <h2 className="font-comic text-3xl mb-4">
-            📚 Wat leer je van Live Formatie?
+            💡 Wat heb je eraan?
           </h2>
           <ul className="space-y-3">
             <li className="flex gap-2">
-              <span className="shrink-0">•</span>
-              <span><strong>Hoe formeren partijen een coalitie?</strong> - Ontdek welke partijen goed kunnen samenwerken</span>
+              <span className="shrink-0">🎭</span>
+              <span><strong>Vermakelijk</strong> - Zie je favoriete (of minst favoriete) politici met elkaar in discussie</span>
             </li>
             <li className="flex gap-2">
-              <span className="shrink-0">•</span>
-              <span><strong>Wat zijn de partijstandpunten?</strong> - Leer de actuele visies van alle 17 Tweede Kamerpartijen kennen</span>
+              <span className="shrink-0">📊</span>
+              <span><strong>Inzicht in standpunten</strong> - Ontdek wat partijen écht vinden over verschillende onderwerpen</span>
             </li>
             <li className="flex gap-2">
-              <span className="shrink-0">•</span>
-              <span><strong>Hoe komen politici tot compromissen?</strong> - Zie hoe verschillende standpunten naar elkaar toe groeien</span>
+              <span className="shrink-0">🤝</span>
+              <span><strong>Coalitie-kansen</strong> - Zie welke partijen wel/niet met elkaar kunnen samenwerken</span>
             </li>
             <li className="flex gap-2">
-              <span className="shrink-0">•</span>
-              <span><strong>Wat kan de Tweede Kamer écht doen?</strong> - Begrijp de bevoegdheden: moties, wetsvoorstellen, budgetrecht</span>
+              <span className="shrink-0">⚖️</span>
+              <span><strong>Begrijp de Tweede Kamer</strong> - Wat kunnen Kamerleden nou eigenlijk écht doen?</span>
             </li>
             <li className="flex gap-2">
-              <span className="shrink-0">•</span>
-              <span><strong>Waarom zijn zetels belangrijk?</strong> - Ervaar hoe machtsposities onderhandelingen beïnvloeden</span>
+              <span className="shrink-0">🎪</span>
+              <span><strong>Entertainment</strong> - Laten we eerlijk zijn, het is gewoon leuk om te lezen</span>
             </li>
           </ul>
         </section>
 
         <section>
-          <h2 className="font-comic text-3xl mb-4">⚠️ Belangrijke notitie</h2>
+          <h2 className="font-comic text-3xl mb-4">⚠️ Disclaimer</h2>
           <div className="bg-yellow-50 border border-yellow-300 rounded-xl p-5 md:p-6">
             <p>
-              <strong>Let op:</strong> Live Formatie is een educatief hulpmiddel
-              en geen voorspelling van echte formatie-onderhandelingen. De
-              gesprekken zijn AI-gegenereerd en weerspiegelen niet de exacte
-              meningen of taalgebruik van de echte politici. Gebruik het platform
-              als een manier om politieke standpunten en dynamieken beter te
-              begrijpen, niet als politiek advies.
+              <strong>Dit is geen documentaire.</strong> De gesprekken zijn
+              AI-gegenereerd en bedoeld als entertainment met een serieuze ondertoon.
+              De standpunten zijn gebaseerd op echte verkiezingsprogramma's, maar
+              het taalgebruik en de specifieke reacties zijn kunstmatig. Gebruik
+              het niet als politiek advies - ga stemmen op basis van échte informatie.
             </p>
           </div>
         </section>
@@ -230,8 +236,8 @@ export default function HoeHetWerktPage() {
         <section>
           <h2 className="font-comic text-3xl mb-4">🚀 Probeer het zelf!</h2>
           <p className="mb-6">
-            Klaar om je eigen formatie te simuleren? Start een gesprek en
-            ontdek hoe jouw ideale coalitie tot een compromis komt.
+            Klaar om te kijken hoe je favoriete (of minst favoriete) coalitie
+            het ervan af brengt? Start een gesprek en geniet van de show.
           </p>
           <div>
             <Link href="/">
