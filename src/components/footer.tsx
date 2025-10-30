@@ -3,11 +3,11 @@ import { InfoIcon, Linkedin } from "lucide-react";
 
 export function Footer() {
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-3 items-end">
-      {/* Info button */}
+    <>
+      {/* Info button - rechts */}
       <Link
         href="/hoe-het-werkt"
-        className="bg-white text-gray-900 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105 group overflow-hidden"
+        className="fixed bottom-6 right-6 z-50 bg-white text-gray-900 rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105 group overflow-hidden"
       >
         <div className="flex items-center h-14 group-hover:pr-6">
           <div className="w-14 h-14 flex items-center justify-center shrink-0">
@@ -19,8 +19,8 @@ export function Footer() {
         </div>
       </Link>
 
-      {/* LinkedIn links */}
-      <div className="bg-white text-gray-900 rounded-full shadow-lg px-5 py-3 flex items-center gap-3">
+      {/* LinkedIn links - links */}
+      <div className="fixed bottom-6 left-6 z-50 bg-white text-gray-900 rounded-full shadow-lg px-5 py-3 flex items-center gap-3">
         <span className="text-sm font-medium text-gray-600">Made by:</span>
         <div className="flex items-center gap-2">
           <a
@@ -46,7 +46,7 @@ export function Footer() {
           </a>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
