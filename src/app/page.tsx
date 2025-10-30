@@ -3,6 +3,9 @@ import { ConversationDialog } from "@/components/conversation-dialog";
 import { Ornament } from "@/components/ornament";
 import { deelnemers } from "@/data/deelnemers";
 import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { InfoIcon } from "lucide-react";
 
 export default async function Home() {
   const topDeelnemers = deelnemers.slice(0, 5);
@@ -158,6 +161,16 @@ export default async function Home() {
         {/* Conversation Dialog */}
         <div className="flex justify-center">
           <ConversationDialog deelnemers={deelnemers} />
+        </div>
+
+        {/* How it works link */}
+        <div className="flex justify-center mt-6">
+          <Link href="/hoe-het-werkt">
+            <Button variant="outline" size="lg" className="gap-2">
+              <InfoIcon className="size-5" />
+              Hoe werkt het?
+            </Button>
+          </Link>
         </div>
       </Container>
       <div className="fixed bottom-0 left-1/2 -translate-x-1/2 flex justify-center items-end -space-x-[5%] z-20">
