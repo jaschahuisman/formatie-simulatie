@@ -217,6 +217,12 @@ Contributions zijn welkom.
 4. Push naar de branch (`git push origin feature/new-feature`)
 5. Open een Pull Request
 
+## Authors
+
+Gebouwd door:
+- [Jascha Huisman](https://www.linkedin.com/in/jaschahuisman/)
+- [Niek van Damn](https://www.linkedin.com/in/niekvandamn/)
+
 ## Disclaimer
 
 Dit is een AI-simulatie voor entertainment doeleinden. Gesprekken zijn kunstmatig gegenereerd en geen voorspelling van echte formatiegesprekken. Standpunten zijn gebaseerd op verkiezingsprogramma's 2025, maar het taalgebruik en specifieke reacties zijn gegenereerd door AI.
