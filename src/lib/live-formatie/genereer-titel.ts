@@ -1,4 +1,5 @@
-import { generateText } from "ai";
+import { generateText, generateObject } from "ai";
+import { z } from "zod";
 import { model } from "@/lib/ai";
 import { createLogger } from "@/lib/logger";
 
@@ -6,7 +7,17 @@ const MAX_ONDERWERP_LENGTH = 100;
 const logger = createLogger("genereer-titel");
 
 /**
- * Check of de input veilig en geschikt is voor een politiek gesprek
+ * Schema voor content safety check
+ */
+const contentSafetySchema = z.object({
+  safe: z.boolean().describe("Of de input gepast is om over te discussiëren"),
+  reason: z.string().optional().describe("Reden waarom de input ongepast is (alleen bij safe=false)"),
+});
+
+/**
+ * Check of de input gepast is om over te discussiëren
+ * Zwart-wit check: NSFW, haatspraak, discriminatie = geblokkeerd
+ * Controversiële maar legitieme onderwerpen = toegestaan
  */
 export async function checkContentSafety(onderwerp: string): Promise<{
   safe: boolean;
@@ -17,32 +28,33 @@ export async function checkContentSafety(onderwerp: string): Promise<{
   });
 
   try {
-    const { text } = await generateText({
+    const { object } = await generateObject({
       model,
-      prompt: `Je bent een content moderator. Beoordeel of deze input geschikt is voor een serieus politiek gesprek.
+      schema: contentSafetySchema,
+      prompt: `Je bent een content moderator. Beoordeel of deze input gepast is om over te discussiëren.
 
 Input:
 "${onderwerp}"
 
-Beoordeel op:
-- NSFW content (seksualiteit, geweld, grof taalgebruik)
+Check ZWART-WIT op deze criteria (direct blokkeren):
+- NSFW content (explicite seksualiteit, extreme geweld)
 - Haatdragende uitspraken
-- Spam of zinloze tekst
-- Discriminerende inhoud
+- Discriminerende inhoud (racisme, homofobie, etc.)
+- Spam of complete onzin
 
-Geef ALLEEN één van deze twee antwoorden:
-1. "SAFE" - als de input geschikt is voor een politiek gesprek
-2. "UNSAFE: [reden]" - als de input niet geschikt is, met een korte uitleg
+LET OP:
+- Controversiële maar legitieme onderwerpen zijn SAFE (bijv. "illegalen Nederland uit", "abortus", "euthanasie")
+- Politieke standpunten, ook extreme, zijn SAFE zolang ze niet haatdragend zijn
+- Het hoeft geen "serieus politiek onderwerp" te zijn - ook ludieke onderwerpen zijn toegestaan
 
-Antwoord:`,
+Geef een structured response met:
+- safe: true als de input gepast is, false als ongepast
+- reason: alleen invullen als safe=false, geef dan een korte uitleg waarom het geblokkeerd wordt`,
     });
 
-    const response = text.trim();
-
-    if (response.startsWith("UNSAFE:")) {
-      const reason = response.replace("UNSAFE:", "").trim();
-      logger.warn("Content deemed unsafe", { reason });
-      return { safe: false, reason };
+    if (!object.safe) {
+      logger.warn("Content deemed unsafe", { reason: object.reason });
+      return { safe: false, reason: object.reason };
     }
 
     logger.info("Content is safe");

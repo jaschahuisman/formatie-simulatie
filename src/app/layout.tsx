@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Averia_Libre, Rubik_Dirt } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { Toaster } from "sonner";
+import { Footer } from "@/components/footer";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL!;
 
@@ -64,12 +66,14 @@ export default function RootLayout({
     <html lang="nl">
       <body
         className={cn(
-          "bg-radial bg-background-end from-background-start to-background-end flex flex-col min-h-screen",
+          "bg-radial bg-background-end from-background-start to-background-end",
           rubikDirt.variable,
           funnelDisplay.className
         )}
       >
+        <Toaster richColors position="top-center" />
         {children}
+        <Footer />
       </body>
     </html>
   );
