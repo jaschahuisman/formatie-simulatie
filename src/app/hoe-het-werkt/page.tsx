@@ -25,7 +25,7 @@ export default function HoeHetWerktPage() {
             Hoe werkt Live Formatie?
           </h1>
 
-          <p className="text-lg md:text-xl text-muted-foreground">
+          <p className="text-lg md:text-xl">
             Live Formatie simuleert realistische politieke gesprekken tussen
             Nederlandse partijleiders. Ontdek hoe onze AI-technologie werkt en
             wat je kunt leren over formaties.
@@ -34,7 +34,7 @@ export default function HoeHetWerktPage() {
 
         <section>
           <h2 className="font-comic text-3xl mb-4">🎯 Wat is Live Formatie?</h2>
-          <div className="space-y-4 text-muted-foreground">
+          <div className="space-y-4">
             <p>
               Live Formatie is een educatief platform dat je laat zien hoe
               Nederlandse politieke partijen met elkaar in gesprek gaan. Door
@@ -62,7 +62,7 @@ export default function HoeHetWerktPage() {
                 </span>
                 Kies je coalitie
               </h3>
-              <p className="text-muted-foreground">
+              <p>
                 Selecteer minimaal 2 politieke partijen die met elkaar in
                 gesprek moeten. Je ziet direct hoeveel Tweede Kamerzetels je
                 coalitie heeft en of je een meerderheid (76+ zetels) bereikt.
@@ -76,7 +76,7 @@ export default function HoeHetWerktPage() {
                 </span>
                 Bepaal het onderwerp
               </h3>
-              <p className="text-muted-foreground">
+              <p>
                 Kies waar de politici het over moeten hebben. Van klimaat en
                 migratie tot de prijs van frikandelbroodjes - alle onderwerpen
                 zijn mogelijk. Ons systeem controleert automatisch of het onderwerp
@@ -91,11 +91,11 @@ export default function HoeHetWerktPage() {
                 </span>
                 AI genereert het gesprek
               </h3>
-              <p className="text-muted-foreground mb-3">
+              <p className="mb-3">
                 Onze AI-technologie genereert een realistisch gesprek van ~22
                 berichten over 5 minuten. Elke politicus reageert op basis van:
               </p>
-              <ul className="space-y-2 text-sm text-muted-foreground">
+              <ul className="space-y-2 text-sm">
                 <li className="flex gap-2">
                   <span className="shrink-0">•</span>
                   <span><strong>Actuele standpunten</strong> - Gebaseerd op verkiezingsprogramma's 2025</span>
@@ -122,7 +122,7 @@ export default function HoeHetWerktPage() {
                 </span>
                 Bekijk het resultaat
               </h3>
-              <p className="text-muted-foreground">
+              <p>
                 Het gesprek verloopt in chat-stijl met korte, snelle berichten.
                 Politici sturen 1-3 berichten per beurt, compleet met emoji's
                 (vooral jongere politici) en typische uitspraken. Aan het einde
@@ -134,7 +134,7 @@ export default function HoeHetWerktPage() {
 
         <section>
           <h2 className="font-comic text-3xl mb-4">🤖 De technologie</h2>
-          <div className="space-y-6 text-muted-foreground">
+          <div className="space-y-6">
             <p>
               Live Formatie gebruikt geavanceerde AI-modellen (Google Gemini 2.0
               Flash) om realistische gesprekken te genereren. We variëren tussen
@@ -142,7 +142,7 @@ export default function HoeHetWerktPage() {
             </p>
 
             <div>
-              <h3 className="text-xl md:text-2xl font-semibold mb-3 text-foreground">
+              <h3 className="text-xl md:text-2xl font-semibold mb-3">
                 Realistische politieke dynamiek
               </h3>
               <p className="mb-3">Het systeem houdt rekening met:</p>
@@ -167,7 +167,7 @@ export default function HoeHetWerktPage() {
             </div>
 
             <div>
-              <h3 className="text-xl md:text-2xl font-semibold mb-3 text-foreground">
+              <h3 className="text-xl md:text-2xl font-semibold mb-3">
                 Content moderatie
               </h3>
               <p className="mb-3">
@@ -189,7 +189,7 @@ export default function HoeHetWerktPage() {
           <h2 className="font-comic text-3xl mb-4">
             📚 Wat leer je van Live Formatie?
           </h2>
-          <ul className="space-y-3 text-muted-foreground text-sm">
+          <ul className="space-y-3">
             <li className="flex gap-2">
               <span className="shrink-0">•</span>
               <span><strong>Hoe formeren partijen een coalitie?</strong> - Ontdek welke partijen goed kunnen samenwerken</span>
@@ -215,9 +215,9 @@ export default function HoeHetWerktPage() {
 
         <section>
           <h2 className="font-comic text-3xl mb-4">⚠️ Belangrijke notitie</h2>
-          <div className="bg-yellow-50 dark:bg-yellow-950/50 border border-yellow-200 dark:border-yellow-800/50 rounded-lg p-5 md:p-6 text-sm text-muted-foreground">
+          <div className="bg-yellow-50 dark:bg-yellow-950/50 border border-yellow-200 dark:border-yellow-800/50 rounded-lg p-5 md:p-6">
             <p>
-              <strong className="text-foreground">Let op:</strong> Live Formatie is een educatief hulpmiddel
+              <strong>Let op:</strong> Live Formatie is een educatief hulpmiddel
               en geen voorspelling van echte formatie-onderhandelingen. De
               gesprekken zijn AI-gegenereerd en weerspiegelen niet de exacte
               meningen of taalgebruik van de echte politici. Gebruik het platform
@@ -229,7 +229,7 @@ export default function HoeHetWerktPage() {
 
         <section>
           <h2 className="font-comic text-3xl mb-4">🚀 Probeer het zelf!</h2>
-          <p className="text-muted-foreground mb-6">
+          <p className="mb-6">
             Klaar om je eigen formatie te simuleren? Start een gesprek en
             ontdek hoe jouw ideale coalitie tot een compromis komt.
           </p>
@@ -242,7 +242,7 @@ export default function HoeHetWerktPage() {
           </div>
         </section>
 
-        <section className="text-xs text-muted-foreground border-t border-border pt-6">
+        <section className="text-sm border-t border-border pt-6 opacity-75">
           <p>
             <strong>Zetelverdeling:</strong> Gebaseerd op de eerste exitpoll
             van 2025. De standpunten zijn afgeleid van actuele
