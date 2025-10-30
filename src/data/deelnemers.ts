@@ -533,7 +533,7 @@ export const deelnemers: Deelnemer[] = [
       "Nederland heeft een kleinere overheid nodig",
     ],
     persoonlijkeDetails:
-      "JA21-leider, won Thorbecke-prijs voor welsprekendheid. Voormalig Leefbaar Rotterdam-wethouder. Conservatief-liberaal met focus op veiligheid en nationale identiteit.",
+      "JA21-leider, won Thorbecke-prijs voor welsprekendheid. Voormalig Leefbaar Rotterdam-wethouder. Conservatief-liberaal met focus op veiligheid en nationale identiteit. Staat verdacht vaak achter de DJ-tafel",
     partij: {
       name: "JA21",
       short: "JA21",

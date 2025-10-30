@@ -242,16 +242,22 @@ export function Gesprek({
               );
             }
 
+            const isUserMessage = item.data.deelnemerId === 0;
+            const displayName = isUserMessage 
+              ? "U" 
+              : (item.data.deelnemer?.name || "Unknown");
+            
             return (
               <Bericht
                 key={item.data.id}
-                name={item.data.deelnemer?.name || "Unknown"}
+                name={displayName}
                 content={item.data.content}
                 time={new Date(item.data.timestamp)}
                 zetels={item.data.deelnemer?.partij?.zetels || 0}
                 image={item.data.deelnemer?.image}
                 showHeader={!isConsecutive}
                 isConsecutive={isConsecutive}
+                isUserMessage={isUserMessage}
               />
             );
           })}

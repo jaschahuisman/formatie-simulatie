@@ -1,4 +1,4 @@
-import { ArmchairIcon } from "lucide-react";
+import { ArmchairIcon, UserIcon } from "lucide-react";
 import Image from "next/image";
 
 type Props = {
@@ -9,9 +9,38 @@ type Props = {
   image?: string;
   showHeader?: boolean;
   isConsecutive?: boolean;
+  isUserMessage?: boolean; // New prop for user intro messages
 };
 
-export function Bericht({ name, content, time, zetels, image, showHeader = true, isConsecutive = false }: Props) {
+export function Bericht({ name, content, time, zetels, image, showHeader = true, isConsecutive = false, isUserMessage = false }: Props) {
+  // User intro message has different styling
+  if (isUserMessage) {
+    return (
+      <div className="flex gap-4 w-full">
+        <div className="size-16 aspect-square rounded-full bg-primary/10 overflow-hidden shrink-0 flex items-center justify-center">
+          <UserIcon className="size-8 text-primary" />
+        </div>
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-bold">{name}</span>
+          </div>
+          <div className="max-w-prose p-3 pl-4 bg-primary/5 text-foreground rounded-3xl rounded-tl-none border border-primary/20">
+            <div>{content}</div>
+            <div className="mt-2 flex justify-end">
+              <span className="text-xs text-muted-foreground">
+                {new Date(time).toLocaleTimeString("nl-NL", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Regular politician message
   return (
     <div className={`flex gap-4 w-full ${isConsecutive ? '-mt-3' : ''}`}>
       {showHeader ? (

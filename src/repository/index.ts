@@ -104,10 +104,21 @@ export async function getGesprekById(id: number) {
     }
 
     // Enrich berichten with deelnemer data from static source
-    const berichtenMetDeelnemers = gesprek.berichten.map((bericht) => ({
-      ...bericht,
-      deelnemer: deelnemers.find((d) => d.id === bericht.deelnemerId) || null,
-    }));
+    const berichtenMetDeelnemers = gesprek.berichten.map((bericht) => {
+      // Special handling for intro message (deelnemerId = 0)
+      if (bericht.deelnemerId === 0) {
+        return {
+          ...bericht,
+          deelnemerName: "U",
+          deelnemer: null,
+        };
+      }
+      
+      return {
+        ...bericht,
+        deelnemer: deelnemers.find((d) => d.id === bericht.deelnemerId) || null,
+      };
+    });
 
     logger.debug("Gesprek fetched", { found: true });
     return {

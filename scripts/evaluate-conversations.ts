@@ -23,12 +23,18 @@ const EVALUATION_TOPICS = [
 // Selecteer een diverse set politici (van links naar rechts)
 const EVALUATION_DEELNEMERS = [
   1,  // Geert Wilders (PVV)
-  2,  // Frans Timmermans (GL-PvdA)
+  2,  // Jesse Klaver (GL-PvdA)
   3,  // Dilan Yeşilgöz (VVD)
-  4,  // Eddy van Hijum (CDA)
-  9,  // Rob Jetten (D66)
+  4,  // Eddy van Hijum (NSC)
+  5,  // Rob Jetten (D66)
   6,  // Caroline van der Plas (BBB)
 ];
+
+// Test with ALL politicians to verify system works at scale
+const ALL_POLITICIANS_TEST = {
+  topic: "De huidige politieke situatie",
+  deelnemerIds: deelnemers.map(d => d.id), // All 17 politicians
+};
 
 interface EvaluationResult {
   timestamp: string;
@@ -160,10 +166,12 @@ async function evaluateConversation(
 async function runEvaluation() {
   console.log("🚀 Starting conversation evaluation...\n");
   console.log(`📋 Topics: ${EVALUATION_TOPICS.join(", ")}`);
-  console.log(`👥 Deelnemers: ${EVALUATION_DEELNEMERS.length} participants`);
+  console.log(`👥 Regular tests: ${EVALUATION_DEELNEMERS.length} participants`);
+  console.log(`👥 Large group test: ${ALL_POLITICIANS_TEST.deelnemerIds.length} participants (ALL politicians)`);
 
   const results: EvaluationResult[] = [];
 
+  // Run regular topic evaluations with 6 politicians
   for (const topic of EVALUATION_TOPICS) {
     try {
       const result = await evaluateConversation(topic, EVALUATION_DEELNEMERS);
@@ -175,6 +183,25 @@ async function runEvaluation() {
       console.error(`Failed to generate conversation for "${topic}"`, error);
       // Continue with other topics
     }
+  }
+
+  // Run large group test with ALL politicians
+  console.log("\n" + "=".repeat(80));
+  console.log("🌟 LARGE GROUP TEST: Testing with ALL 17 politicians");
+  console.log("=".repeat(80) + "\n");
+  
+  try {
+    const result = await evaluateConversation(
+      ALL_POLITICIANS_TEST.topic,
+      ALL_POLITICIANS_TEST.deelnemerIds
+    );
+    results.push(result);
+    
+    console.log(`\n✅ Large group test completed successfully!`);
+    console.log(`   Unique speakers: ${result.metadata.conversationFlow.uniqueSpeakers}/${ALL_POLITICIANS_TEST.deelnemerIds.length}`);
+    console.log(`   Total messages: ${result.metadata.totalMessages}`);
+  } catch (error) {
+    console.error(`Failed to generate large group conversation`, error);
   }
 
   // Save results to JSON file

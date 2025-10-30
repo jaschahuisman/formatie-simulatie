@@ -1,5 +1,5 @@
 import {
-  GESPREK_TARGET_MESSAGES_COUNT,
+  calculateTargetMessageCount,
   GESPREK_TURNS_PER_BATCH,
 } from "@/config";
 import { Deelnemer } from "@/data/deelnemers";
@@ -13,16 +13,39 @@ const logger = createLogger("genereer-gesprek-berichten");
 
 // Constants for conversation context management
 const CONTEXT_THRESHOLD = 15; // Show summary when conversation has >15 messages
-const RECENT_MESSAGES_COUNT = 5; // Number of recent messages to show for reactions
 const LEAST_ACTIVE_THRESHOLD = 3; // Minimum message count to be considered "active"
 const MAX_TURNS_TO_USE = 3; // Maximum turns to use from AI response (even if it generates more)
 const LAST_BATCH_THRESHOLD = 10; // Remaining messages threshold to trigger last batch mode
+
+/**
+ * Calculate how many recent messages to show for reactions based on participant count
+ * More participants = need more context to see variety
+ */
+function calculateRecentMessagesCount(participantCount: number): number {
+  return Math.min(10, Math.max(5, participantCount));
+}
 
 export type GeneratedMessage = {
   message: string;
   deelnemerName: string;
   deelnemerId: number;
 };
+
+/**
+ * Generate an intro message from the user who started the conversation
+ */
+function generateIntroMessage(onderwerp: string): string {
+  const variations = [
+    `Beste politici, ik wil graag dat jullie het hebben over: ${onderwerp}`,
+    `Goedendag, kunnen jullie jullie standpunten delen over ${onderwerp}?`,
+    `Ik zou graag jullie mening horen over ${onderwerp}`,
+    `Kunnen we het vandaag hebben over ${onderwerp}?`,
+    `Ik start deze discussie over: ${onderwerp}. Wat vinden jullie?`,
+  ];
+  
+  // Select a random variation
+  return variations[Math.floor(Math.random() * variations.length)];
+}
 
 type AIGeneratedMessage = {
   deelnemerName: string;
@@ -110,10 +133,15 @@ function buildRoleSection(onderwerp: string): string {
   return `
     # Rol
     Je bent een expert in het schrijven van realistische Nederlandse politieke onderhandelingen. 
-    Je schrijft een constructief gesprek tussen politici die tot een compromis proberen te komen.
+    Politici proberen tot overeenstemming te komen, maar dit lukt niet altijd.
+    Wees eerlijk over fundamentele ideologische verschillen die niet te overbruggen zijn.
     
     # Onderwerp
-    ${onderwerp}`;
+    ${onderwerp}
+    
+    ⚠️ BELANGRIJK: Het onderwerp is "${onderwerp}". 
+    Politici mogen hun ideologie inbrengen en soms zijwegen nemen (dat is menselijk en soms grappig).
+    Maar zorg dat discussies een logische link hebben met het onderwerp - dwaal niet meteen volledig af.`;
 }
 
 /**
@@ -193,21 +221,32 @@ function buildChatStyleSection(): string {
       * SOMS 2 berichten (uitgebreider)
       * ZELDEN 3 berichten (complex punt)
     - Berichten zijn ZEER KORT (meestal 1 korte zin, max 15-20 woorden)
+    - INFORMELE TOON: Niet altijd "Achternaam," - wissel af met directe reacties, voornamen, of geen aanspraak
+      * Gebruik soms achternaam voor formeel/kritisch
+      * Gebruik voornaam voor vriendelijk/informeel
+      * Reageer soms direct zonder naam te noemen
     - Emojis: spaarzaam, vooral door jongere politici (Rob Jetten, Laurens Dassen)`;
 }
 
 /**
  * Build reactive flow section
  */
-function buildReactiveFlowSection(): string {
+function buildReactiveFlowSection(participantCount: number): string {
+  const largeGroupGuidance = participantCount > 8 
+    ? `\n    - Bij grote groepen (${participantCount} politici): NIET iedereen reageert op alles
+    - Subgroepen mogen ontstaan (bijv. klimaatblok vs anti-klimaatblok)
+    - Sommige politici blijven stil als het onderwerp niet hun kernthema is`
+    : "";
+
   return `
     
-    # Reactieve Flow
-    - Politici reageren direct op wat er net gezegd is
+    # Reactieve Flow & Diepgang
+    - Politici reageren INHOUDELIJK op wat er net gezegd is, niet alleen met "eens!" of "onzin!"
+    - Stel kritische vragen: "Hoe financier je dat?" "Wat als X gebeurt?"
     - Bepaal logisch wie getriggerd wordt:
-      * Tegenpolen: Wilders ↔ Timmermans
-      * Coalitiegenoten steunen elkaar
-    - Reacties moeten logisch aansluiten op laatste berichten`;
+      * Tegenpolen: Wilders ↔ Klaver (klimaat/migratie), VVD ↔ SP (economie)
+      * Coalitiegenoten steunen elkaar maar hebben ook eigen agenda
+    - Bij fundamentele verschillen: blijf bij je principes, geef niet zomaar toe${largeGroupGuidance}`;
 }
 
 /**
@@ -239,7 +278,11 @@ function buildUserPrompt(options: {
   isLastBatch: boolean;
 }): string {
   const baseTurnInstructions = options.isLastBatch
-    ? "⚠️ DIT IS HET LAATSTE STUK - GENEREER 2 OF 3 BEURTEN ⚠️\n\nHet gesprek moet eindigen met toenadering en perspectief op een compromis."
+    ? "⚠️ DIT IS HET LAATSTE STUK - GENEREER 2 OF 3 BEURTEN ⚠️\n\nHet gesprek moet REALISTISCH eindigen. Kies wat past bij de discussie:\n" +
+      "- Compromis als standpunten dicht bij elkaar lagen\n" +
+      "- Patstelling als fundamentele verschillen onoverbrugbaar zijn\n" +
+      "- Deelakkoord met kanttekeningen\n" +
+      "- 'We praten verder' als geen akkoord mogelijk is"
     : "⚠️ GENEREER 2 OF 3 BEURTEN ⚠️";
 
   return `${options.conversationContext}${options.lastSpeakerContext}${options.speakerDistributionContext}
@@ -255,8 +298,10 @@ Maximum 3 politici mogen reageren.
 
 WIE zou logisch reageren op de LAATSTE BERICHTEN? Overweeg:
 - Wie wordt getriggerd door wat er in de LAATSTE BERICHTEN gezegd is?
-- Reageer op de INHOUD van die specifieke berichten
-${options.isLastBatch ? "- Laat het gesprek natuurlijk naar een conclusie vloeien" : ""}`;
+- Reageer INHOUDELIJK op die specifieke berichten (niet alleen "eens!" of "onzin!")
+- Stel kritische vragen om standpunten uit te dagen
+- Blijf grotendeels bij het onderwerp, maar afdwalen naar gerelateerde punten mag (is soms grappig en realistisch)
+${options.isLastBatch ? "- Laat het gesprek natuurlijk afronden met een REALISTISCHE uitkomst" : ""}`;
 }
 
 /**
@@ -335,7 +380,7 @@ const buildSystemMessage = (opties: {
     buildDeelemersSection(sortedDeelnemers) +
     buildZetelverdeling(sortedDeelnemers) +
     buildChatStyleSection() +
-    buildReactiveFlowSection() +
+    buildReactiveFlowSection(opties.deelnemers.length) +
     buildKamerBevoegdhedenSection()
   );
 };
@@ -347,20 +392,34 @@ export async function genereerGesprekBerichten(opties: {
   endAt: Date;
 }) {
   const generatedMessages: GeneratedMessage[] = [];
+  
+  // Add intro message from the user who started the conversation
+  const introMessage: GeneratedMessage = {
+    message: generateIntroMessage(opties.onderwerp),
+    deelnemerName: "U", // The user who started the conversation
+    deelnemerId: 0, // Special ID for the conversation starter
+  };
+  generatedMessages.push(introMessage);
+  
   const systemPrompt = buildSystemMessage(opties);
 
   let phase: "begin" | "midden" | "einde" = "begin";
   let batchCount = 0;
 
+  // Calculate target message count based on number of participants
+  const targetMessageCount = calculateTargetMessageCount(opties.deelnemers.length);
+  const recentMessagesCount = calculateRecentMessagesCount(opties.deelnemers.length);
+
   logger.info(
-    `Generating ~${GESPREK_TARGET_MESSAGES_COUNT} messages in batches of ${GESPREK_TURNS_PER_BATCH} turns (kleinere batches voor natuurlijker gesprek)`,
-    { phase }
+    `Generating ~${targetMessageCount} messages in batches of ${GESPREK_TURNS_PER_BATCH} turns (kleinere batches voor natuurlijker gesprek)`,
+    { phase, participants: opties.deelnemers.length, targetMessages: targetMessageCount }
   );
 
-  while (generatedMessages.length < GESPREK_TARGET_MESSAGES_COUNT) {
+  // Start from 1 since we already have the intro message
+  while (generatedMessages.length < targetMessageCount + 1) {
     batchCount++;
 
-    const progress = generatedMessages.length / GESPREK_TARGET_MESSAGES_COUNT;
+    const progress = (generatedMessages.length - 1) / targetMessageCount;
 
     if (progress < 0.3) {
       phase = "begin";
@@ -370,8 +429,7 @@ export async function genereerGesprekBerichten(opties: {
       phase = "einde";
     }
 
-    const remainingMessages =
-      GESPREK_TARGET_MESSAGES_COUNT - generatedMessages.length;
+    const remainingMessages = targetMessageCount + 1 - generatedMessages.length;
 
     const isLastBatch = remainingMessages <= LAST_BATCH_THRESHOLD;
 
@@ -388,14 +446,19 @@ export async function genereerGesprekBerichten(opties: {
 
     const phaseInstructions = {
       begin:
-        "Dit is het BEGIN van het gesprek. Laat de politici het onderwerp introduceren en hun standpunten helder uiteenzetten. Toon waar ze van elkaar verschillen.",
+        "Dit is het BEGIN van het gesprek. Een gebruiker heeft het onderwerp geïntroduceerd. Laat de politici nu reageren en hun standpunten helder uiteenzetten. Toon waar ze van elkaar verschillen.",
       midden:
-        "Dit is het MIDDEN van het gesprek. De discussie wordt dieper. Politici stellen kritische vragen, uiten bezwaren, maar beginnen ook overeenkomsten te zien. Toon realistische spanning maar ook openheid.",
+        "Dit is het MIDDEN van het gesprek. De discussie wordt dieper. Politici stellen kritische vragen, uiten bezwaren, en beginnen de kern van hun fundamentele verschillen bloot te leggen. Toon realistische spanning en echte dilemma's.",
       einde:
-        "Dit is het EINDE van het gesprek. Politici moeten nu naar elkaar toebewegen. Laat zien dat er ruimte is voor een compromis of dat er concrete vervolgstappen worden gezet. Eindig constructief met perspectief op een oplossing.",
+        "Dit is het EINDE van het gesprek. Laat de politici REALISTISCH eindigen. Mogelijke uitkomsten:\n" +
+        "- COMPROMIS: Als standpunten dicht bij elkaar liggen, kan er een akkoord komen\n" +
+        "- PATSTELLING: Bij fundamentele verschillen blijft discussie vastlopen (bijv. Wilders vs Klaver over klimaat/migratie)\n" +
+        "- DEELAKKOORD: Overeenstemming op deelpunten, maar kernverschillen blijven bestaan\n" +
+        "- DOORPRATEN: 'We blijven het oneens, maar praten verder'\n\n" +
+        "Wees EERLIJK over ideologische kloven. Niet alles is oplosbaar. Bij grote groepen (>8) mogen subgroepen ontstaan die onderling discussiëren.",
     };
 
-    const recentMessages = generatedMessages.slice(-RECENT_MESSAGES_COUNT);
+    const recentMessages = generatedMessages.slice(-recentMessagesCount);
     const lastSpeakerContext = buildLastSpeakerContext(recentMessages);
 
     // Track speaker counts
@@ -489,11 +552,11 @@ export async function genereerGesprekBerichten(opties: {
 
       generatedMessages.push(...newMessages);
       logger.debug(
-        `Generated ${newMessages.length} messages for batch ${batchCount} (total: ${generatedMessages.length}/${GESPREK_TARGET_MESSAGES_COUNT})`,
+        `Generated ${newMessages.length} messages for batch ${batchCount} (total: ${generatedMessages.length}/${targetMessageCount})`,
         { batchCount, totalMessages: generatedMessages.length }
       );
 
-      if (generatedMessages.length >= GESPREK_TARGET_MESSAGES_COUNT) {
+      if (generatedMessages.length >= targetMessageCount) {
         logger.info(`Target message count reached, stopping generation`);
         break;
       }
@@ -534,7 +597,7 @@ export async function genereerGesprekBerichten(opties: {
 
   logger.info("Gesprek berichten generation completed", {
     totalMessages: generatedMessages.length,
-    targetMessages: GESPREK_TARGET_MESSAGES_COUNT,
+    targetMessages: targetMessageCount,
   });
 
   return addTimestampsToMessages(
