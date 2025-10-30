@@ -194,30 +194,28 @@ export default function HoeHetWerktPage() {
 
         <section>
           <h2 className="font-comic text-3xl mb-4">
-            💡 Wat heb je eraan?
+            🎬 Waarom Live Formatie?
           </h2>
-          <ul className="space-y-3">
-            <li className="flex gap-2">
-              <span className="shrink-0">🎭</span>
-              <span><strong>Vermakelijk</strong> - Zie je favoriete (of minst favoriete) politici met elkaar in discussie</span>
-            </li>
-            <li className="flex gap-2">
-              <span className="shrink-0">📊</span>
-              <span><strong>Inzicht in standpunten</strong> - Ontdek wat partijen écht vinden over verschillende onderwerpen</span>
-            </li>
-            <li className="flex gap-2">
-              <span className="shrink-0">🤝</span>
-              <span><strong>Coalitie-kansen</strong> - Zie welke partijen wel/niet met elkaar kunnen samenwerken</span>
-            </li>
-            <li className="flex gap-2">
-              <span className="shrink-0">⚖️</span>
-              <span><strong>Begrijp de Tweede Kamer</strong> - Wat kunnen Kamerleden nou eigenlijk écht doen?</span>
-            </li>
-            <li className="flex gap-2">
-              <span className="shrink-0">🎪</span>
-              <span><strong>Entertainment</strong> - Laten we eerlijk zijn, het is gewoon leuk om te lezen</span>
-            </li>
-          </ul>
+          <div className="space-y-4">
+            <p>
+              Je ziet als burger nooit wat er écht gebeurt als politici achter
+              gesloten deuren met elkaar moeten samenwerken. Live Formatie laat
+              je als het ware meekijken: jij bepaalt de coalitie en het onderwerp,
+              wij simuleren hoe die politici met elkaar zouden kunnen discussiëren.
+            </p>
+            <p>
+              Is het realistisch? Dat is lastig te zeggen - niemand weet precies
+              hoe formateurs en politici écht met elkaar omgaan. Maar door echte
+              verkiezingsprogramma's, typische uitspraken en politieke verhoudingen
+              te combineren, krijg je in ieder geval een vermakelijke indruk van
+              de mogelijke dynamiek.
+            </p>
+            <p className="text-sm">
+              <strong>Vergeet niet:</strong> Dit is een AI-simulatie, geen
+              voorspelling of documentaire. Zie het als entertainment dat je laat
+              nadenken over politieke samenwerking.
+            </p>
+          </div>
         </section>
 
         <section>
