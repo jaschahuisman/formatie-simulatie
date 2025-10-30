@@ -18,7 +18,7 @@ export const MODEL_CONFIGS = [
   },
   {
     name: "gemini-2.0-flash-creative",
-    model: google("gemini-2.0-flash"),
+    model: google("gemini-2.0-flash"),x 
     settings: {
       temperature: 1.2,
       topP: 0.98,
