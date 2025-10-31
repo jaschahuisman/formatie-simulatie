@@ -221,10 +221,10 @@ function buildChatStyleSection(): string {
       * SOMS 2 berichten (uitgebreider)
       * ZELDEN 3 berichten (complex punt)
     - Berichten zijn ZEER KORT (meestal 1 korte zin, max 15-20 woorden)
-    - INFORMELE TOON: Niet altijd "Achternaam," - wissel af met directe reacties, voornamen, of geen aanspraak
-      * Gebruik soms achternaam voor formeel/kritisch
-      * Gebruik voornaam voor vriendelijk/informeel
-      * Reageer soms direct zonder naam te noemen
+    - INFORMELE TOON: Gebruik ALTIJD voornamen, NOOIT achternamen
+      * Spreek elkaar aan met voornaam (bijv. "Geert", "Jesse", "Dilan")
+      * Je mag ook direct reageren zonder naam te noemen
+      * NOOIT achternamen gebruiken (dus niet "Wilders" of "Klaver")
     - Emojis: spaarzaam, vooral door jongere politici (Rob Jetten, Laurens Dassen)`;
 }
 
