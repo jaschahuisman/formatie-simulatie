@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeftIcon } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Hoe het werkt - Live Formatie",
+  title: "Hoe het werkt - Formatie Simulatie",
   description:
     "Ontdek hoe onze AI-gestuurde formatie simulatie werkt en hoe politici tot een compromis komen.",
 };
@@ -22,7 +22,7 @@ export default function HoeHetWerktPage() {
       <article className="bg-white rounded-2xl shadow-xl p-6 md:p-12 space-y-8 md:space-y-12 text-gray-900">
         <div>
           <h1 className="font-comic text-4xl md:text-5xl mb-4">
-            Hoe werkt Live Formatie?
+            Hoe werkt Formatie Simulatie?
           </h1>
 
           <p className="text-lg md:text-xl">
@@ -36,7 +36,7 @@ export default function HoeHetWerktPage() {
           <h2 className="font-comic text-3xl mb-4">🎯 Wat is dit precies?</h2>
           <div className="space-y-4">
             <p>
-              Live Formatie laat je zien hoe politieke partijen met elkaar
+              Formatie Simulatie laat je zien hoe politieke partijen met elkaar
               discussiëren. Kies een coalitie, gooi er een onderwerp in, en kijk
               hoe Wilders, Timmermans en de rest van de club reageren op elkaar.
             </p>
@@ -219,12 +219,14 @@ export default function HoeHetWerktPage() {
         </section>
 
         <section>
-          <h2 className="font-comic text-3xl mb-4">🎬 Waarom Live Formatie?</h2>
+          <h2 className="font-comic text-3xl mb-4">
+            🎬 Waarom Formatie Simulatie?
+          </h2>
           <div className="space-y-4">
             <p>
               Je ziet als burger nooit wat er écht gebeurt als politici achter
-              gesloten deuren met elkaar moeten samenwerken. Live Formatie laat
-              je als het ware meekijken: jij bepaalt de coalitie en het
+              gesloten deuren met elkaar moeten samenwerken. Formatie Simulatie
+              laat je als het ware meekijken: jij bepaalt de coalitie en het
               onderwerp, wij simuleren hoe die politici met elkaar zouden kunnen
               discussiëren.
             </p>
@@ -276,8 +278,8 @@ export default function HoeHetWerktPage() {
           <h2 className="font-comic text-3xl mb-4">💻 Open Source</h2>
           <div className="bg-gray-50 border border-gray-200 rounded-xl p-5 md:p-6">
             <p className="mb-4">
-              Live Formatie is volledig open source! Bekijk de code, draag bij,
-              of fork het project om je eigen versie te maken.
+              Formatie Simulatie is volledig open source! Bekijk de code, draag
+              bij, of fork het project om je eigen versie te maken.
             </p>
             <a
               href="https://github.com/jaschahuisman/formatie-simulatie"

@@ -13,7 +13,7 @@ export default function Loading() {
           <Link href="/">
             <Image
               src="/logo.png"
-              alt="Live Formatie"
+              alt="Formatie Simulatie"
               width={120}
               height={120}
               className="w-48 h-auto"

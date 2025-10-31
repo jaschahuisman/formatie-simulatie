@@ -36,7 +36,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL!;
   const gesprekUrl = `${baseUrl}/gesprek/${id}`;
-  const title = `${gesprek.onderwerp} - Live Formatie`;
+  const title = `${gesprek.onderwerp} - Formatie Simulatie`;
   const description = `Een gesprek tussen ${partijNamen} over ${gesprek.onderwerp}`;
 
   return {
@@ -46,7 +46,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title,
       description,
       type: "article",
-      siteName: "Live Formatie",
+      siteName: "Formatie Simulatie",
       locale: "nl_NL",
       url: gesprekUrl,
     },
@@ -96,7 +96,7 @@ export default async function GesprekPage({ params }: Props) {
           <Link href="/">
             <Image
               src="/logo.png"
-              alt="Live Formatie"
+              alt="Formatie Simulatie"
               width={120}
               height={120}
               className="w-48 h-auto"

@@ -1,4 +1,4 @@
-# Live Formatie
+# Formatie Simulatie
 
 AI-gestuurde simulatie van Nederlandse formatiegesprekken. Genereert dynamische politieke discussies op basis van verkiezingsprogramma's 2025, met realistische standpunten en conversatie-stijlen per politicus. 
 

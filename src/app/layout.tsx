@@ -10,7 +10,7 @@ const baseUrl = process.env.NEXT_PUBLIC_BASE_URL!;
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
-  title: "Live Formatie - Politieke Gesprekken",
+  title: "Formatie Simulatie - Politieke Gesprekken",
   description:
     "Maak je eigen formatiegesprek en ontdek hoe politieke partijen tot een compromis kunnen komen.",
   keywords: [
@@ -22,11 +22,11 @@ export const metadata: Metadata = {
     "Nederland",
   ],
   openGraph: {
-    title: "Live Formatie - Politieke Gesprekken",
+    title: "Formatie Simulatie - Politieke Gesprekken",
     description:
       "Maak je eigen formatiegesprek en ontdek hoe politieke partijen tot een compromis kunnen komen.",
     type: "website",
-    siteName: "Live Formatie",
+    siteName: "Formatie Simulatie",
     locale: "nl_NL",
     url: baseUrl,
     images: [
@@ -34,13 +34,13 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Live Formatie - Politieke Gesprekken",
+        alt: "Formatie Simulatie - Politieke Gesprekken",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Live Formatie - Politieke Gesprekken",
+    title: "Formatie Simulatie - Politieke Gesprekken",
     description:
       "Maak je eigen formatiegesprek en ontdek hoe politieke partijen tot een compromis kunnen komen.",
     images: ["/og-image.png"],
