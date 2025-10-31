@@ -5,7 +5,9 @@ import { deelnemers } from "@/data/deelnemers";
 import Image from "next/image";
 
 export default async function Home() {
-  const topDeelnemers = deelnemers.slice(0, 5);
+  const topDeelnemers = deelnemers
+    .sort((a, b) => b.partij.zetels - a.partij.zetels)
+    .slice(0, 5);
 
   return (
     <Page className="items-center justify-center min-h-screen">
@@ -160,7 +162,7 @@ export default async function Home() {
           <ConversationDialog deelnemers={deelnemers} />
         </div>
       </Container>
-      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 flex justify-center items-end -space-x-[5%] z-20">
+      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 flex justify-center items-end -space-x-[5%] -z-1">
         {topDeelnemers.map((deelnemer, index) => (
           <div
             key={deelnemer.id}
